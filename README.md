@@ -48,7 +48,3 @@ The deliverable must be a zipped folder `Assignment-01`, to be submitted on the 
 - `src` directory with sources
 - `doc` directory with a short report in PDF (`report.pdf`). 
 
-
-
-
-# pcd-assignment-01

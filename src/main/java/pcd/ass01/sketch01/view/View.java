@@ -1,4 +1,4 @@
-package pcd.ass01.sketch01;
+package pcd.ass01.sketch01.view;
 
 
 public class View {
@@ -6,7 +6,7 @@ public class View {
 	private ViewFrame frame;
 	
 	public View(ViewModel model) {
-		frame = new ViewFrame(model, 800, 800);	
+		frame = new ViewFrame(model, 1200, 1200);
 		frame.setVisible(true);
 	}
 		

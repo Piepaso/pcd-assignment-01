@@ -1,4 +1,9 @@
-package pcd.ass01.sketch01;
+package pcd.ass01.sketch01.view;
+
+import pcd.ass01.sketch01.model.Board;
+import pcd.ass01.sketch01.model.BoardData;
+import pcd.ass01.sketch01.model.P2d;
+import pcd.ass01.sketch01.model.V2d;
 
 import java.util.ArrayList;
 
@@ -18,13 +23,13 @@ public class ViewModel {
 		startTime = System.currentTimeMillis();
 	}
 	
-	public void update(Board board) {
+	public void update(BoardData board) {
 		balls.clear();
-		for (var b: board.getBalls()) {
-			balls.add(new BallViewInfo(b.getPos(), b.getRadius(), b.getVel()));
+		for (var b: board.balls()) {
+			balls.add(new BallViewInfo(b.pos(), b.radius(), b.vel()));
 		}
-		var p = board.getPlayerBall();
-		player = new BallViewInfo(p.getPos(), p.getRadius(), p.getVel());
+		var p = board.playerBall();
+		player = new BallViewInfo(p.pos(), p.radius(), p.vel());
 	}
 	
 	public ArrayList<BallViewInfo> getBalls(){

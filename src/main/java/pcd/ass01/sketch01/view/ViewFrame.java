@@ -1,4 +1,6 @@
-package pcd.ass01.sketch01;
+package pcd.ass01.sketch01.view;
+
+import pcd.ass01.sketch01.RenderSynch;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -56,10 +58,8 @@ public class ViewFrame extends JFrame {
         public void paint(Graphics g){
     		Graphics2D g2 = (Graphics2D) g;
     		
-    		g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-    		          RenderingHints.VALUE_ANTIALIAS_ON);
-    		g2.setRenderingHint(RenderingHints.KEY_RENDERING,
-    		          RenderingHints.VALUE_RENDER_QUALITY);
+    		g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+    		g2.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
     		g2.clearRect(0,0,this.getWidth(),this.getHeight());
             
     		g2.setColor(Color.LIGHT_GRAY);
@@ -68,28 +68,29 @@ public class ViewFrame extends JFrame {
     		g2.drawLine(0,dy,dx*2,dy);
     		g2.setColor(Color.BLACK);
     		
-    		    g2.setStroke(new BasicStroke(1));
-	    		for (var b: model.getBalls()) {
-	    			var p = b.pos();
-	            	int x0 = (int)(dx + p.x()*dx);
-	                int y0 = (int)(dy - p.y()*dy);
-	                int radiusX = (int)(b.radius()*dx);
-	                int radiusY = (int)(b.radius()*dy);
-	                g2.drawOval(x0 - radiusX,y0 - radiusY,radiusX*2,radiusY*2);
-	    		}
-	
-    		    g2.setStroke(new BasicStroke(3));
-	    		var pb = model.getPlayerBall();
-	    		if (pb != null) {
-					var p1 = pb.pos();
-		        	int x0 = (int)(dx + p1.x()*dx);
-		            int y0 = (int)(dy - p1.y()*dy);
-	                int radiusX = (int)(pb.radius()*dx);
-	                int radiusY = (int)(pb.radius()*dy);
-	                g2.drawOval(x0 - radiusX,y0 - radiusY,radiusX*2,radiusY*2);
-	    		}
-    		    
-    		    sync.notifyFrameRendered();
+            g2.setStroke(new BasicStroke(1));
+            for (var b: model.getBalls()) {
+                var p = b.pos();
+                int x0 = (int)(dx + p.x()*dx);
+                int y0 = (int)(dy - p.y()*dy);
+                int radiusX = (int)(b.radius()*dx);
+                int radiusY = (int)(b.radius()*dy);
+                g2.drawOval(x0 - radiusX,y0 - radiusY,radiusX*2,radiusY*2);
+            }
+
+            g2.setStroke(new BasicStroke(3));
+            var pb = model.getPlayerBall();
+            if (pb != null) {
+				var p1 = pb.pos();
+	            int x0 = (int)(dx + p1.x()*dx);
+	            int y0 = (int)(dy - p1.y()*dy);
+                int radiusX = (int)(pb.radius()*dx);
+                int radiusY = (int)(pb.radius()*dy);
+                g2.drawOval(x0 - radiusX,y0 - radiusY,radiusX*2,radiusY*2);
+				g2.drawString("H", x0 - 4, y0 + 4);
+            }
+
+            sync.notifyFrameRendered();
     		
         }
         

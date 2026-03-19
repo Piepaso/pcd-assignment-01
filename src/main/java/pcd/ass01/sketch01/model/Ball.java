@@ -1,11 +1,11 @@
-package pcd.ass01.sketch01;
+package pcd.ass01.sketch01.model;
 
 public class Ball {
     
     private P2d pos;
     private V2d vel;
-    private double radius;
-    private double mass;   
+    private final double radius;
+    private final double mass;
     
     private static double FRICTION_FACTOR = 0.015; // 0.01 min 0.02 buono
     
@@ -16,17 +16,16 @@ public class Ball {
        this.vel = vel;
     }
 
-    public void updateState(long dt, Board ctx){
+    public void updateState(double dt, Board ctx){
         double speed = vel.abs();
-        double dt_scaled = dt*0.001;
     	if (speed > 0.001) {
-            double dec    = FRICTION_FACTOR * dt_scaled;
+            double dec    = FRICTION_FACTOR * dt;
             double factor = Math.max(0, speed - dec) / speed;
             vel = vel.mul(factor);
         } else {
         	vel = new V2d(0,0);
         }
-        pos = pos.sum(vel.mul(dt_scaled));
+        pos = pos.sum(vel.mul(dt));
      	applyBoundaryConstraints(ctx);
    }
 
@@ -90,7 +89,7 @@ public class Ball {
         double e   = 1.0; // restitution (1 max)
         double imp = -(1 + e) * dvn / (1.0/a.getMass() + 1.0/b.getMass());        
         a.vel = new V2d(a.vel.x() - (imp / a.mass) * nx, a.vel.y() - (imp / a.mass) * ny);                
-        b.vel = new V2d(b.vel.x() + (imp / b.mass) * nx, a.vel.y() + (imp / b.mass) * ny);
+        b.vel = new V2d(b.vel.x() + (imp / b.mass) * nx, b.vel.y() + (imp / b.mass) * ny);
     }
 
     

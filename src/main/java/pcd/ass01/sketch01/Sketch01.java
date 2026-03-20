@@ -1,67 +1,79 @@
 package pcd.ass01.sketch01;
 
-import pcd.ass01.sketch01.model.Board;
-import pcd.ass01.sketch01.model.BoardMonitor;
-import pcd.ass01.sketch01.view.View;
-import pcd.ass01.sketch01.view.ViewModel;
+import java.util.Random;
 
 public class Sketch01 {
 
 	
 	public static void main(String[] argv) {
 
+		/* 
+		 * Different board configs to try:
+		 * - minimal: 2 small balls
+		 * - large: 400 small balls
+		 * - massive: 4500 small balls 
+		 */
+		
+		//var boardConf = new MinimalBoardConf();
+		// var boardConf = new LargeBoardConf();
+		 var boardConf = new MassiveBoardConf();
+		
 		Board board = new Board();
-		board.init();
-
-		BoardMonitor boardMonitor = new BoardMonitor(board);
-		EngineAgent engineAgent = new EngineAgent(boardMonitor);
-
+		board.init(boardConf);
+		
 		ViewModel viewModel = new ViewModel();
-		View view = new View(viewModel);
-		viewModel.init();
+		View view = new View(viewModel, 1200, 800);
+						
+		viewModel.update(board, 0);			
+		view.render();
+		waitAbit();
 
-		ViewAgent viewAgent = new ViewAgent(view, viewModel, boardMonitor::getUpdatedBoardData);
-
-		engineAgent.start();
-		viewAgent.start();
-
-		/*long totalTime = 0;
-		int frameCount = 0;
-		long lastUpdateTime = System.nanoTime();
-		long stateUpdateTime;
-		long renderTime;
-
-				
-		while (true){
-
+		int nFrames = 0;
+		long t0 = System.currentTimeMillis();
+		long lastUpdateTime = System.currentTimeMillis();
 			
-			long elapsed_nano = System.nanoTime() - lastUpdateTime;
-			lastUpdateTime = System.nanoTime();
-			totalTime += elapsed_nano;
-			frameCount++;
+		var pb = board.getPlayerBall();
+		var rand = new Random(2);
+		var lastKickTime = t0;
+				
+		/* main simulation loop */
+		
+		while (true){			
+		
+			/* if the player ball is stopped and 5 secs have elapsed, then kick the player ball */
 
-			stateUpdateTime = System.nanoTime();
-
-			board.updateState(elapsed_nano / 1_000_000_000.0);
-
-			System.out.println("State update time: " + (System.nanoTime() - stateUpdateTime) + " ns");
-
-			renderTime = System.nanoTime();
-
-			viewModel.update(board);
-
-			view.render();
-
-			System.out.println("Render time: " + (System.nanoTime() - renderTime) + " ns");
-
-			if (totalTime > 1_000_000_000) {
-				System.out.println("FPS: " + frameCount);
-				frameCount = 0;
-				totalTime = 0;
+			if (pb.getVel().abs() < 0.05 && System.currentTimeMillis() - lastKickTime > 2000) {
+				var angle = rand.nextDouble()*Math.PI*0.25;
+				var v = new V2d(Math.cos(angle),Math.sin(angle)).mul(1.5);
+				pb.kick(v);
+				lastKickTime = System.currentTimeMillis();
+			}
+			
+			/* update board state */
+			
+			long elapsed = System.currentTimeMillis() - lastUpdateTime;
+			lastUpdateTime = System.currentTimeMillis();			
+			board.updateState(elapsed);
+			
+			/* render */
+			
+			nFrames++;
+			int framePerSec = 0;
+			long dt = (System.currentTimeMillis() - t0);
+			if (dt > 0) {
+				framePerSec = (int)(nFrames*1000/dt);
 			}
 
+			viewModel.update(board, framePerSec);			
+			view.render();
 			
 		}
-	}*/
 	}
+	
+	private static void waitAbit() {
+		try {
+			Thread.sleep(2000);
+		} catch (Exception ex) {}
+	}
+	
 }

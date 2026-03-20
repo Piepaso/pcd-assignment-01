@@ -1,4 +1,4 @@
-package pcd.ass01.sketch01.model;
+package pcd.ass01.poool.model;
 
 public record BoardData(Boundary bounds, BallData[] balls, BallData playerBall) {
 

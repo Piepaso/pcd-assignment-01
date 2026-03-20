@@ -1,7 +1,7 @@
-package pcd.ass01.sketch01;
+package pcd.ass01.poool;
 
-import pcd.ass01.sketch01.model.BoardData;
-import pcd.ass01.sketch01.view.*;
+import pcd.ass01.poool.model.BoardData;
+import pcd.ass01.poool.view.*;
 
 import java.util.function.Supplier;
 
@@ -10,11 +10,13 @@ public class ViewAgent extends Thread {
 	private final View view;
 	private final ViewModel viewModel;
 	private final Supplier<BoardData> boardSupplier;
+	private final Supplier<Integer> engineFPSgetter;
 
-	public ViewAgent(View view, ViewModel viewModel, Supplier<BoardData> boardSupplier) {
+	public ViewAgent(View view, ViewModel viewModel, Supplier<BoardData> boardSupplier, Supplier<Integer> fps) {
 		this.view = view;
 		this.viewModel = viewModel;
 		this.boardSupplier = boardSupplier;
+		this.engineFPSgetter = fps;
 	}
 
 	public void run() {
@@ -28,7 +30,8 @@ public class ViewAgent extends Thread {
 
 			frameCounter++;
 			if (System.nanoTime() - previousFPSUpdate >= 10e8) {
-				System.out.println("Render FPS: " + frameCounter);
+				viewModel.updateEngineFPS(engineFPSgetter.get());
+				viewModel.updateViewFPS(frameCounter);
 				previousFPSUpdate = System.nanoTime();
 				frameCounter = 0;
 			}

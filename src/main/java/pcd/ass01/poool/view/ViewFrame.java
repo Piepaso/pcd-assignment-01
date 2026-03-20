@@ -1,6 +1,4 @@
-package pcd.ass01.sketch01.view;
-
-import pcd.ass01.sketch01.RenderSynch;
+package pcd.ass01.poool.view;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -15,11 +13,9 @@ public class ViewFrame extends JFrame {
     
     private VisualiserPanel panel;
     private ViewModel model;
-    private RenderSynch sync;
     
     public ViewFrame(ViewModel model, int w, int h){
     	this.model = model;
-    	this.sync = new RenderSynch();
     	setTitle("Sketch 01");
         setSize(w,h + 25);
         setResizable(false);
@@ -35,14 +31,8 @@ public class ViewFrame extends JFrame {
 		});
     }
      
-    public void render(){
-		long nf = sync.nextFrameToRender();
+    public void render() {
         panel.repaint();
-		try {
-			sync.waitForFrameRendered(nf);
-		} catch (InterruptedException ex) {
-			ex.printStackTrace();
-		}
     }
         
     public class VisualiserPanel extends JPanel {
@@ -69,6 +59,8 @@ public class ViewFrame extends JFrame {
     		g2.setColor(Color.BLACK);
     		
             g2.setStroke(new BasicStroke(1));
+
+			/* Render balls */
             for (var b: model.getBalls()) {
                 var p = b.pos();
                 int x0 = (int)(dx + p.x()*dx);
@@ -78,6 +70,7 @@ public class ViewFrame extends JFrame {
                 g2.drawOval(x0 - radiusX,y0 - radiusY,radiusX*2,radiusY*2);
             }
 
+			/* Render player */
             g2.setStroke(new BasicStroke(3));
             var pb = model.getPlayerBall();
             if (pb != null) {
@@ -90,8 +83,10 @@ public class ViewFrame extends JFrame {
 				g2.drawString("H", x0 - 4, y0 + 4);
             }
 
-            sync.notifyFrameRendered();
-    		
+	        g2.setStroke(new BasicStroke(1));
+	        g2.drawString("Num small balls: " + model.getBalls().length, 20, 40);
+	        g2.drawString("FPS engine: " + model.getEngineFPS(), 20, 60);
+	        g2.drawString("FPS view: " + model.getViewFPS(), 20, 80);
         }
         
     }

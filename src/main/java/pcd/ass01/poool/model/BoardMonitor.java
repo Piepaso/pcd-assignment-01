@@ -1,4 +1,4 @@
-package pcd.ass01.sketch01.model;
+package pcd.ass01.poool.model;
 
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
@@ -29,7 +29,7 @@ public class BoardMonitor {
 		this.lock = new ReentrantLock();
 		this.canUpdate = lock.newCondition();
 		this.canRead = lock.newCondition();
-		this.updated = true;
+		this.updated = false;
 		this.needToRead = false;
 	}
 

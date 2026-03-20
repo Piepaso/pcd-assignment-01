@@ -20,7 +20,7 @@ public class Sketch01 {
 		View view = new View(viewModel);
 		viewModel.init();
 
-		ViewAgent viewAgent = new ViewAgent(view, viewModel, boardMonitor::getBoard);
+		ViewAgent viewAgent = new ViewAgent(view, viewModel, boardMonitor::getUpdatedBoardData);
 
 		engineAgent.start();
 		viewAgent.start();

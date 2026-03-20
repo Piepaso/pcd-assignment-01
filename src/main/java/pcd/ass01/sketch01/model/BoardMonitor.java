@@ -14,6 +14,14 @@ public class BoardMonitor {
 	private volatile boolean updated;
 	private volatile boolean needToRead;
 
+
+	/*
+	* Solitamente l'update viene chiamato molto più frequentemente della get
+	* Se fossero 2 metodi syncronized il get farebbe fatica a prendere la lock
+	* Quando una get viene chiamata, non appena l'update corrente finisce il prossimo si blocca per lasciargli la lock
+	* Con updated si assicura che la get attenda almeno un update prima di essere rieseguita,
+	* nel caso il rendere dovesse essere molto veloce
+	*/
 	public BoardMonitor(Board board) {
 		this.board = board;
 		this.boardData = board.getData();
@@ -40,7 +48,7 @@ public class BoardMonitor {
 		}
 	}
 
-	public BoardData getBoard() {
+	public BoardData getUpdatedBoardData() {
 		needToRead = true;
 		lock.lock();
 		try {

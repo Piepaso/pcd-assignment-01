@@ -1,22 +1,33 @@
 package pcd.ass01.poool.model;
 
 public class Ball {
-    
-    private P2d pos;
-    private V2d vel;
+
+    private final static double FRICTION_FACTOR = 0.0; // 0.01 min 0.02 buono
+    private final static double RESTITUTION_FACTOR = 1.0;
+
     private final double radius;
     private final double mass;
+    private final boolean isPlayer;
+
+    private P2d pos;
+    private V2d vel;
+
+    private V2d posIncrease;
+    private V2d velIncrease;
+
     
-    private static double FRICTION_FACTOR = 0.015; // 0.01 min 0.02 buono
-    
-    public Ball(P2d pos, double radius, double mass, V2d vel){
+    public Ball(P2d pos, double radius, double mass, V2d vel, boolean isPlayer) {
+       this.isPlayer = isPlayer;
        this.pos = pos;
        this.radius = radius;
        this.mass = mass;
        this.vel = vel;
+
+       posIncrease = new V2d(0,0);
+       velIncrease = new V2d(0,0);
     }
 
-    public void updateState(double dt, Board ctx){
+    public void updateState(double dt, Boundary bounds){
         double speed = vel.abs();
     	if (speed > 0.001) {
             double dec    = FRICTION_FACTOR * dt;
@@ -26,11 +37,10 @@ public class Ball {
         	vel = new V2d(0,0);
         }
         pos = pos.sum(vel.mul(dt));
-     	applyBoundaryConstraints(ctx);
+     	applyBoundaryConstraints(bounds);
    }
 
-    private void applyBoundaryConstraints(Board ctx){
-        Boundary bounds = ctx.getBounds();
+    private void applyBoundaryConstraints(Boundary bounds){
         if (pos.x() + radius > bounds.x1()){
             pos = new P2d(bounds.x1() - radius, pos.y());
             vel = vel.getSwappedX();
@@ -46,50 +56,47 @@ public class Ball {
         }
     }
 
-    public static void resolveCollision(Ball a, Ball b) {
-        double dx   = b.pos.x() - a.pos.x();
-        double dy   = b.pos.y() - a.pos.y();
+    public void resolveCollision(BallData other) {
+        /* check if there is a collision */
+
+        double dx   = other.pos().x() - pos.x();
+        double dy   = other.pos().y() - pos.y();
         double dist = Math.hypot(dx, dy);
-        double minD = a.radius + b.radius;
-        
-        if (dist >= minD || dist < 1e-6)  /* not colliding or null dist*/
-        	return;
+        double minD = radius + other.radius();
 
-        /* update pos due the collision */ 
-        
-        double nx = dx / dist;
-        double ny = dy / dist;
 
-        double overlap = minD - dist;
-        double totalM  = a.mass + b.mass;
+        if (dist < minD && dist > 1e-6)  {
 
-        double a_factor = overlap * (b.mass / totalM);
-        double a_deltax = nx * a_factor; 
-        double a_deltay = ny * a_factor; 
-        
-        a.pos = new P2d(a.getPos().x() - a_deltax, a.getPos().y() - a_deltay);
-        
-        double b_factor = overlap * (a.mass / totalM);
-        double b_deltax = nx * b_factor; 
-        double b_deltay = ny * b_factor; 
+            double nx = dx / dist;
+            double ny = dy / dist;
 
-        b.pos = new P2d(b.getPos().x() + b_deltax, b.getPos().y() + b_deltay);
+            double overlap = minD - dist;
+            double totalM  = mass + other.mass();
 
-        /* update velocity vectors */
-        
-        /* relative speed along the normal vector*/
+            double a_factor = overlap * (other.mass() / totalM);
+            posIncrease = posIncrease.sum(new V2d(- nx * a_factor, - ny * a_factor));
 
-        double dvx = b.vel.x() - a.vel.x();
-        double dvy = b.vel.y() - a.vel.y(); 
-        double dvn = dvx * nx + dvy * ny;
+            /* Update velocities  */
 
-        if (dvn > 0) /* already separating*/ 
-        	return; 
-        
-        double e   = 1.0; // restitution (1 max)
-        double imp = -(1 + e) * dvn / (1.0/a.getMass() + 1.0/b.getMass());        
-        a.vel = new V2d(a.vel.x() - (imp / a.mass) * nx, a.vel.y() - (imp / a.mass) * ny);                
-        b.vel = new V2d(b.vel.x() + (imp / b.mass) * nx, b.vel.y() + (imp / b.mass) * ny);
+            /* relative speed along the normal vector*/
+
+            double dvx = other.vel().x() - vel.x();
+            double dvy = other.vel().y() - vel.y();
+            double dvn = dvx * nx + dvy * ny;
+
+            if (dvn <= 0) { /* if not already separating, update velocities */
+                double imp = -(1 + RESTITUTION_FACTOR) * dvn / (1.0/mass + 1.0/other.mass());
+                velIncrease = velIncrease.sum(new V2d(- (imp / mass) * nx, - (imp / mass) * ny));
+            }
+        }
+    }
+
+    public void applyIncreases() {
+    	pos = pos.sum(posIncrease);
+    	vel = vel.sum(velIncrease);
+
+    	posIncrease = new V2d(0,0);
+        velIncrease = new V2d(0,0);
     }
 
     
@@ -107,6 +114,10 @@ public class Ball {
     
     public double getRadius() {
     	return radius;
+    }
+
+    public boolean isPlayer() {
+    	return isPlayer;
     }
 
 }

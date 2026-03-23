@@ -4,27 +4,32 @@ package pcd.ass01.poool.model;
 import java.util.*;
 
 public class Board {
-    private Boundary bounds;
-    private List<Ball> balls;
-    private Ball playerBall;
 
-    public Board(){
-        bounds = new Boundary(-1.0,-1.0,1.0,1.0);
-        balls = new ArrayList<Ball>();
+	private final int ballsThreadNum;
+    private final Boundary bounds;
+    private final List<Ball> balls;
+
+    public Board(BoardConf conf, int ballsThreadNum) {
+		this.ballsThreadNum = ballsThreadNum;
+	    balls = conf.getSmallBalls();
+	    balls.add(conf.getPlayerBall());
+	    bounds = conf.getBoardBoundary();
     }
 
-	public void init(BoardConf conf) {
-		balls = conf.getSmallBalls();
-		playerBall = conf.getPlayerBall();
-		bounds = conf.getBoardBoundary();
+	public void init(BallsMonitor ballsMonitor) {
+		for (int i = 0; i < ballsThreadNum; i++) {
+			int fromIndex = i * balls.size() / ballsThreadNum;
+			int toIndex = (i + 1) * balls.size() / ballsThreadNum;
+			new BallsAgent(balls.subList(fromIndex, toIndex), bounds, ballsMonitor).start();
+		}
 	}
 
-    public void updateState(double dt) {
+    /*public void updateState(double dt) {
 
-    	playerBall.updateState(dt, this);
+    	playerBall.updateState(dt, bounds);
 
     	for (var b: balls) {
-    		b.updateState(dt, this);
+    		b.updateState(dt, bounds);
     	}
 
     	for (int i = 0; i < balls.size() - 1; i++) {
@@ -36,12 +41,13 @@ public class Board {
     		Ball.resolveCollision(playerBall, b);
     	}
 
-    }
+    }*/
 
 	public BoardData getData() {
+		Ball playerBall = balls.get(balls.size() - 1);
 		return new BoardData(
-			bounds,
-			balls.stream().map(b -> new BallData(b.getPos(), b.getVel(), b.getRadius(), b.getMass())).toArray(BallData[]::new),
+			bounds, //immutable
+			balls.stream().map(b -> new BallData(b.getPos(), b.getVel(), b.getRadius(), b.getMass())).toList(),
 			new BallData(playerBall.getPos(), playerBall.getVel(), playerBall.getRadius(), playerBall.getMass()));
 	}
 

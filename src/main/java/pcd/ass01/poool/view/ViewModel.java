@@ -3,6 +3,8 @@ package pcd.ass01.poool.view;
 import pcd.ass01.poool.model.BallData;
 import pcd.ass01.poool.model.BoardData;
 
+import java.util.List;
+
 public class ViewModel {
 
 	private BoardData boardData;
@@ -22,7 +24,7 @@ public class ViewModel {
 		boardData = board;
 	}
 	
-	public BallData[] getBalls(){
+	public List<BallData> getBalls(){
 		return boardData.balls();
 	}
 	

@@ -1,9 +1,6 @@
 package pcd.ass01.poool;
 
-import pcd.ass01.poool.model.Board;
-import pcd.ass01.poool.model.BoardConf;
-import pcd.ass01.poool.model.BoardMonitor;
-import pcd.ass01.poool.model.MassiveBoardConf;
+import pcd.ass01.poool.model.*;
 import pcd.ass01.poool.view.View;
 import pcd.ass01.poool.view.ViewModel;
 
@@ -12,21 +9,25 @@ public class Poool {
 	
 	public static void main(String[] argv) {
 
-		BoardConf conf = new MassiveBoardConf();
-		Board board = new Board();
-		board.init(conf);
+		final int THREADS = 20;
 
-		BoardMonitor boardMonitor = new BoardMonitor(board);
-		EngineAgent engineAgent = new EngineAgent(boardMonitor);
+		BoardConf conf = new MassiveBoardConf();
+		Board board = new Board(conf, THREADS);
+
+		BallsMonitor ballsMonitor = new BallsMonitor(board, THREADS);
+
+		board.init(ballsMonitor);
+
+		//EngineAgent engineAgent = new EngineAgent(ballsMonitor);
 
 		ViewModel viewModel = new ViewModel();
-		viewModel.init(boardMonitor.getUpdatedBoardData());
+		viewModel.init(ballsMonitor.getUpdatedBoardData());
 
 		View view = new View(viewModel);
 
-		ViewAgent viewAgent = new ViewAgent(view, viewModel, boardMonitor::getUpdatedBoardData, engineAgent::getFPS);
+		ViewAgent viewAgent = new ViewAgent(view, viewModel, ballsMonitor::getUpdatedBoardData, ballsMonitor::getFrames);
 
-		engineAgent.start();
+		//engineAgent.start();
 		viewAgent.start();
 
 		/*long totalTime = 0;

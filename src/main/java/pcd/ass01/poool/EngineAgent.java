@@ -1,15 +1,13 @@
 package pcd.ass01.poool;
 
-import pcd.ass01.poool.model.BoardMonitor;
-
-import java.util.Observable;
+import pcd.ass01.poool.model.BallsMonitor;
 
 public class EngineAgent extends Thread {
-	private final BoardMonitor boardMonitor;
+	private final BallsMonitor ballsMonitor;
 	private volatile int fps = 0;
 
-	public EngineAgent(BoardMonitor boardMonitor) {
-		this.boardMonitor = boardMonitor;
+	public EngineAgent(BallsMonitor ballsMonitor) {
+		this.ballsMonitor = ballsMonitor;
 	}
 
 	public void run() {
@@ -30,7 +28,7 @@ public class EngineAgent extends Thread {
 				frameCounter = 0;
 			}
 
-			boardMonitor.updateBoard(elapsed_nano / 1_000_000_000.0);
+			//ballsMonitor.notifyNextFrame(elapsed_nano / 1_000_000_000.0);
 		}
 	}
 

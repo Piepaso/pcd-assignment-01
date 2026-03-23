@@ -84,7 +84,7 @@ public class ViewFrame extends JFrame {
             }
 
 	        g2.setStroke(new BasicStroke(1));
-	        g2.drawString("Num small balls: " + model.getBalls().length, 20, 40);
+	        g2.drawString("Num small balls: " + model.getBalls().size(), 20, 40);
 	        g2.drawString("FPS engine: " + model.getEngineFPS(), 20, 60);
 	        g2.drawString("FPS view: " + model.getViewFPS(), 20, 80);
         }

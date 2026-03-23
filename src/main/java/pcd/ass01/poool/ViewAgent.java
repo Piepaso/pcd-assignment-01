@@ -28,8 +28,14 @@ public class ViewAgent extends Thread {
 			viewModel.update(boardData);
 			view.render();
 
+			try {
+				Thread.sleep(1);
+			} catch (InterruptedException e) {
+				throw new RuntimeException(e);
+			}
+
 			frameCounter++;
-			if (System.nanoTime() - previousFPSUpdate >= 10e8) {
+			if (System.nanoTime() - previousFPSUpdate >= 1_000_000_000L) {
 				viewModel.updateEngineFPS(engineFPSgetter.get());
 				viewModel.updateViewFPS(frameCounter);
 				previousFPSUpdate = System.nanoTime();

@@ -1,22 +1,32 @@
 package pcd.ass01.poool.view;
 
+import pcd.ass01.poool.controller.ActiveController;
+import pcd.ass01.poool.controller.PressedCmd;
+import pcd.ass01.poool.controller.ReleasedCmd;
+import pcd.ass01.poool.model.P2d;
+
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import javax.swing.*;
 
 public class ViewFrame extends JFrame {
     
-    private VisualiserPanel panel;
-    private ViewModel model;
+    private final VisualiserPanel panel;
+    private final ViewModel model;
+	private final ActiveController controller;
     
-    public ViewFrame(ViewModel model, int w, int h){
+    public ViewFrame(ViewModel model, ActiveController controller, int w, int h){
     	this.model = model;
-    	setTitle("Sketch 01");
+		this.controller = controller;
+
+    	setTitle("Poool");
         setSize(w,h + 25);
         setResizable(false);
         panel = new VisualiserPanel(w,h);
@@ -29,9 +39,30 @@ public class ViewFrame extends JFrame {
 				System.exit(-1);
 			}
 		});
+
+		panel.addMouseListener(new MouseListener() {
+			@Override
+			public void mouseClicked(java.awt.event.MouseEvent e) {}
+
+			@Override
+			public void mousePressed(java.awt.event.MouseEvent e) {
+				controller.notifyNewCmd(new PressedCmd(System.currentTimeMillis()));
+			}
+
+			@Override
+			public void mouseReleased(java.awt.event.MouseEvent e) {
+				controller.notifyNewCmd(new ReleasedCmd(System.currentTimeMillis(), getNormalizedPos(e)));
+			}
+
+			@Override
+			public void mouseEntered(MouseEvent e) {}
+
+			@Override
+			public void mouseExited(MouseEvent e) {}
+		});
     }
-     
-    public void render() {
+
+	public void render() {
         panel.repaint();
     }
         
@@ -90,4 +121,12 @@ public class ViewFrame extends JFrame {
         }
         
     }
+
+	private P2d getNormalizedPos(MouseEvent e) {
+		long time = System.currentTimeMillis();
+		double normX = (e.getX() - panel.dx) / (double) panel.dx;
+		double normY = (panel.dy - e.getY()) / (double) panel.dy;
+		return new P2d(normX, normY);
+	}
+
 }

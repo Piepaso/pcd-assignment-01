@@ -1,7 +1,7 @@
 package pcd.ass01.poool.view;
 
 import pcd.ass01.poool.model.BallData;
-import pcd.ass01.poool.model.BoardData;
+import pcd.ass01.poool.configuration.BoardData;
 
 import java.util.List;
 

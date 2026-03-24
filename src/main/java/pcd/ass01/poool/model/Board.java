@@ -1,6 +1,9 @@
 package pcd.ass01.poool.model;
 
 
+import pcd.ass01.poool.configuration.BoardConf;
+import pcd.ass01.poool.configuration.BoardData;
+
 import java.util.*;
 
 public class Board {
@@ -11,65 +14,25 @@ public class Board {
 
     public Board(BoardConf conf, int ballsThreadNum) {
 		this.ballsThreadNum = ballsThreadNum;
-	    balls = conf.getSmallBalls();
+	    balls = new ArrayList<>(conf.getSmallBalls());
 	    balls.add(conf.getPlayerBall());
 	    bounds = conf.getBoardBoundary();
     }
 
-	public void init(BallsMonitor ballsMonitor) {
+	public void startBalls(BallsMonitor ballsMonitor, CmdMonitor playerMonitor) {
 		for (int i = 0; i < ballsThreadNum; i++) {
 			int fromIndex = i * balls.size() / ballsThreadNum;
 			int toIndex = (i + 1) * balls.size() / ballsThreadNum;
-			new BallsAgent(balls.subList(fromIndex, toIndex), bounds, ballsMonitor).start();
+			new BallsAgent(balls.subList(fromIndex, toIndex), bounds, ballsMonitor, playerMonitor).start();
 		}
 	}
-
-    /*public void updateState(double dt) {
-
-    	playerBall.updateState(dt, bounds);
-
-    	for (var b: balls) {
-    		b.updateState(dt, bounds);
-    	}
-
-    	for (int i = 0; i < balls.size() - 1; i++) {
-            for (int j = i + 1; j < balls.size(); j++) {
-                Ball.resolveCollision(balls.get(i), balls.get(j));
-            }
-        }
-    	for (var b: balls) {
-    		Ball.resolveCollision(playerBall, b);
-    	}
-
-    }*/
 
 	public BoardData getData() {
 		Ball playerBall = balls.get(balls.size() - 1);
 		return new BoardData(
-			bounds, //immutable
-			balls.stream().map(b -> new BallData(b.getPos(), b.getVel(), b.getRadius(), b.getMass())).toList(),
-			new BallData(playerBall.getPos(), playerBall.getVel(), playerBall.getRadius(), playerBall.getMass()));
-	}
-
-	private static List<P2d> generateTriangle(int rows, double radius, P2d startVertex) {
-		List<P2d> points = new ArrayList<>();
-		double centerDistance = 2 * radius;
-		double rowHeight = radius * Math.sqrt(3.0);
-
-		for (int row = 0; row < rows; row++) {
-			double yOffset = row * rowHeight;
-			double xStartOffset = -((row * centerDistance) / 2.0);
-
-			for (int col = 0; col <= row; col++) {
-				double xOffset = xStartOffset + (col * centerDistance);
-				points.add(startVertex.sum(new V2d(xOffset, yOffset)));
-			}
-		}
-
-		return points;
-	}
-
-	protected Boundary getBounds() {
-		return bounds;
+			bounds,
+			balls.stream().map(BallData::new).toList(),
+			new BallData(playerBall)
+		);
 	}
 }

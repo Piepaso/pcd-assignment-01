@@ -1,4 +1,9 @@
-package pcd.ass01.poool.model;
+package pcd.ass01.poool.configuration;
+
+import pcd.ass01.poool.model.Ball;
+import pcd.ass01.poool.model.Boundary;
+import pcd.ass01.poool.model.P2d;
+import pcd.ass01.poool.model.V2d;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,7 +12,7 @@ public class LargeBoardConf implements BoardConf {
 
 	@Override
 	public Ball getPlayerBall() {
-		return  new  Ball(new  P2d(0, -0.75), 0.05, 1.5, new  V2d(0,1), true);
+		return  new  Ball(new P2d(0, -0.75), 0.05, 1.5, new V2d(0,1), true);
 	}
 
 	@Override

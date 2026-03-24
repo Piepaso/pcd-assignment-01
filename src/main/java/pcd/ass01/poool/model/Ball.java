@@ -2,8 +2,9 @@ package pcd.ass01.poool.model;
 
 public class Ball {
 
-    private final static double FRICTION_FACTOR = 0.0; // 0.01 min 0.02 buono
+    private final static double FRICTION_FACTOR = 0.02; // 0.01 min 0.02 buono
     private final static double RESTITUTION_FACTOR = 1.0;
+    private final static double MIN_SPEED = 0.0001;
 
     private final double radius;
     private final double mass;
@@ -14,6 +15,7 @@ public class Ball {
 
     private V2d posIncrease;
     private V2d velIncrease;
+    private int numCollisions;
 
     
     public Ball(P2d pos, double radius, double mass, V2d vel, boolean isPlayer) {
@@ -25,11 +27,12 @@ public class Ball {
 
        posIncrease = new V2d(0,0);
        velIncrease = new V2d(0,0);
+       numCollisions = 0;
     }
 
     public void updateState(double dt, Boundary bounds){
         double speed = vel.abs();
-    	if (speed > 0.001) {
+    	if (speed > MIN_SPEED) {
             double dec    = FRICTION_FACTOR * dt;
             double factor = Math.max(0, speed - dec) / speed;
             vel = vel.mul(factor);
@@ -87,16 +90,19 @@ public class Ball {
             if (dvn <= 0) { /* if not already separating, update velocities */
                 double imp = -(1 + RESTITUTION_FACTOR) * dvn / (1.0/mass + 1.0/other.mass());
                 velIncrease = velIncrease.sum(new V2d(- (imp / mass) * nx, - (imp / mass) * ny));
+                numCollisions++;
             }
         }
     }
 
     public void applyIncreases() {
     	pos = pos.sum(posIncrease);
-    	vel = vel.sum(velIncrease);
-
+        if (numCollisions > 0) {
+            vel = vel.sum(velIncrease.mul(1.0 / numCollisions));
+        }
     	posIncrease = new V2d(0,0);
         velIncrease = new V2d(0,0);
+        numCollisions = 0;
     }
 
     
@@ -118,6 +124,14 @@ public class Ball {
 
     public boolean isPlayer() {
     	return isPlayer;
+    }
+
+    public void kick(Kick kick) {
+        if (isPlayer) {
+            vel = new V2d(kick.position(), pos).getNormalized().mul(Math.min(kick.strength(), 3.0));
+        } else {
+            throw new IllegalStateException("Only player ball can be kicked");
+        }
     }
 
 }

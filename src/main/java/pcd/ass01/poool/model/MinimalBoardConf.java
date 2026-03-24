@@ -1,5 +1,7 @@
 package pcd.ass01.poool.model;
 
+import pcd.ass01.poool.configuration.BoardConf;
+
 import java.util.ArrayList;
 import java.util.List;
 

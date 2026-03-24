@@ -1,5 +1,7 @@
 package pcd.ass01.poool.model;
 
+import pcd.ass01.poool.configuration.BoardData;
+
 import java.util.List;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
@@ -13,12 +15,12 @@ public class BallsMonitor {
 	private final Condition newFrameStarted;
 	private final Condition allUpdated;
 
-	private volatile int threadsUpdated;
-	private volatile int threadsFinished;
+	private int threadsUpdated;
+	private int threadsFinished;
 
-	private volatile long lastUpdateTime;
-	private volatile double elapsed_sec;
-	private volatile int frameCounter;
+	private long lastUpdateTime;
+	private double elapsed_sec;
+	private int frameCounter;
 	private volatile BoardData boardData;
 	private volatile List<BallData> uncollisionedBallsData;
 	private volatile boolean updated;

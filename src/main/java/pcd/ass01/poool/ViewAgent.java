@@ -1,6 +1,6 @@
 package pcd.ass01.poool;
 
-import pcd.ass01.poool.model.BoardData;
+import pcd.ass01.poool.configuration.BoardData;
 import pcd.ass01.poool.view.*;
 
 import java.util.function.Supplier;
@@ -27,12 +27,6 @@ public class ViewAgent extends Thread {
 			BoardData boardData = boardSupplier.get();
 			viewModel.update(boardData);
 			view.render();
-
-			try {
-				Thread.sleep(1);
-			} catch (InterruptedException e) {
-				throw new RuntimeException(e);
-			}
 
 			frameCounter++;
 			if (System.nanoTime() - previousFPSUpdate >= 1_000_000_000L) {

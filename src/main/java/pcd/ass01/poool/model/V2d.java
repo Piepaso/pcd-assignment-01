@@ -3,16 +3,20 @@ package pcd.ass01.poool.model;
 
 public record V2d(double x, double y)  {
 
+    public V2d(P2d from, P2d to){
+        this(to.x() - from.x(), to.y() - from.y());
+    }
+
     public V2d sum(V2d v){
         return new V2d(x+v.x,y+v.y);
     }
 
     public double abs(){
-        return (double)Math.sqrt(x*x+y*y);
+        return Math.sqrt(x*x+y*y);
     }
 
     public V2d getNormalized(){
-        double module=(double)Math.sqrt(x*x+y*y);
+        double module = Math.sqrt(x*x+y*y);
         return new V2d(x/module,y/module);
     }
 

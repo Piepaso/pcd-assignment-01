@@ -1,6 +1,5 @@
 package pcd.ass01.poool.controller;
 
-import pcd.ass01.poool.model.CmdMonitor;
 import pcd.ass01.poool.util.BoundedBuffer;
 import pcd.ass01.poool.util.BoundedBufferImpl;
 

@@ -1,7 +1,5 @@
 package pcd.ass01.poool.controller;
 
-import pcd.ass01.poool.model.CmdMonitor;
-
 
 public class PressedCmd implements Cmd {
 

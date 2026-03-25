@@ -1,6 +1,6 @@
-package pcd.ass01.poool.model;
+package pcd.ass01.poool.configuration;
 
-import pcd.ass01.poool.configuration.BoardConf;
+import pcd.ass01.poool.model.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +20,14 @@ public class MinimalBoardConf implements BoardConf {
     	balls.add(b1);
     	balls.add(b2);
     	return balls;
+	}
+
+	@Override
+	public List<Hole> getHoles() {
+		return List.of(
+				new Hole(new P2d(-0.9, 0.9), 0.1),
+				new Hole(new P2d(0.9, 0.9), 0.1)
+		);
 	}
 
 	@Override

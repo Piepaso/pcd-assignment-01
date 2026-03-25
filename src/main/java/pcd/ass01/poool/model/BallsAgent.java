@@ -1,16 +1,17 @@
 package pcd.ass01.poool.model;
 
+import pcd.ass01.poool.controller.BallsMonitor;
+import pcd.ass01.poool.controller.CmdMonitor;
+
 import java.util.List;
 
 public class BallsAgent extends Thread {
 	private final List<Ball> balls;
-	private final Boundary bounds;
 	private final BallsMonitor ballsMonitor;
 	private final CmdMonitor playerMonitor;
 
-	public BallsAgent(List<Ball> balls, Boundary bounds, BallsMonitor monitor, CmdMonitor playerMonitor) {
+	public BallsAgent(List<Ball> balls, BallsMonitor monitor, CmdMonitor playerMonitor) {
 		this.balls = balls;
-		this.bounds = bounds;
 		this.ballsMonitor = monitor;
 		this.playerMonitor = playerMonitor;
 	}
@@ -21,19 +22,22 @@ public class BallsAgent extends Thread {
 			double dt = ballsMonitor.waitForNextFrame();
 
 			for (Ball b : balls) {
-				b.updateState(dt, bounds);
+				b.updateState(dt);
 				if (b.isPlayer() && b.getVel().abs() == 0 && playerMonitor.isKickAvailable()) {
-					b.kick(playerMonitor.consumeKick());
+					b.applyKick(playerMonitor.consumeKick());
 				}
 			}
 
-
 			List<BallData> allBallsData = ballsMonitor.waitForUpdatedBalls();
+
 			for (Ball b : balls) {
 				for (BallData other : allBallsData) {
-					b.resolveCollision(other);
+					b.resolveCollisionWith(other);
 				}
-				b.applyIncreases();
+				b.updateAfterCollisions();
+				if (b.isInHole()) {
+					balls.remove(b);
+				}
 			}
 		}
 	}

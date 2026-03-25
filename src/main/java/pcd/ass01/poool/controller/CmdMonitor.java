@@ -1,4 +1,7 @@
-package pcd.ass01.poool.model;
+package pcd.ass01.poool.controller;
+
+import pcd.ass01.poool.model.Kick;
+import pcd.ass01.poool.model.P2d;
 
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -25,7 +28,7 @@ public class CmdMonitor {
 
 		try {
 			if (pressedTime != -1) {
-				kick = new Kick(position, (time - pressedTime) * 1e-3);
+				kick = new Kick(position, pressedTime, time);
 				kickAvailable = true;
 				pressedTime = -1;
 			}

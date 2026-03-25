@@ -1,6 +1,8 @@
-package pcd.ass01.poool.model;
+package pcd.ass01.poool.controller;
 
-import pcd.ass01.poool.configuration.BoardData;
+import pcd.ass01.poool.model.BoardData;
+import pcd.ass01.poool.model.BallData;
+import pcd.ass01.poool.model.Board;
 
 import java.util.List;
 import java.util.concurrent.locks.Condition;
@@ -24,6 +26,7 @@ public class BallsMonitor {
 	private volatile BoardData boardData;
 	private volatile List<BallData> uncollisionedBallsData;
 	private volatile boolean updated;
+	private volatile boolean gameOver;
 
 	public BallsMonitor(Board board, int threadsNum) {
 		this.threadsNum = threadsNum;
@@ -94,7 +97,7 @@ public class BallsMonitor {
 	public BoardData getUpdatedBoardData() {
 		lock.lock();
 		try {
-			while (updated) {
+			while (updated && !gameOver) {
 				newFrameStarted.await();
 			}
 			updated = true;
@@ -113,6 +116,17 @@ public class BallsMonitor {
 			return frameCounter;
 		} finally {
 			frameCounter = 0;
+			lock.unlock();
+		}
+	}
+
+	public void notifyGameOver() {
+		System.out.println("Game over notified");
+		lock.lock();
+		try {
+			gameOver = true;
+			newFrameStarted.signalAll();
+		} finally {
 			lock.unlock();
 		}
 	}

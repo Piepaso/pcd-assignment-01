@@ -1,8 +1,10 @@
 package pcd.ass01.poool.model;
 
+import java.util.List;
+
 public class Ball {
 
-    private final static double FRICTION_FACTOR = 0.02; // 0.01 min 0.02 buono
+    private final static double FRICTION_FACTOR = 0.00; // 0.01 min 0.02 buono
     private final static double RESTITUTION_FACTOR = 1.0;
     private final static double MIN_SPEED = 0.0001;
 
@@ -12,7 +14,10 @@ public class Ball {
 
     private P2d pos;
     private V2d vel;
+    private boolean inHole;
 
+    private Boundary bounds;
+    private List<Hole> holes;
     private V2d posIncrease;
     private V2d velIncrease;
     private int numCollisions;
@@ -28,9 +33,18 @@ public class Ball {
        posIncrease = new V2d(0,0);
        velIncrease = new V2d(0,0);
        numCollisions = 0;
+       inHole = false;
     }
 
-    public void updateState(double dt, Boundary bounds){
+    public void setBounds(Boundary bounds) {
+    	this.bounds = bounds;
+    }
+
+    public void setHoles(List<Hole> holes) {
+    	this.holes = holes;
+    }
+
+    public void updateState(double dt) {
         double speed = vel.abs();
     	if (speed > MIN_SPEED) {
             double dec    = FRICTION_FACTOR * dt;
@@ -40,10 +54,9 @@ public class Ball {
         	vel = new V2d(0,0);
         }
         pos = pos.sum(vel.mul(dt));
-     	applyBoundaryConstraints(bounds);
+     	applyBoundaryConstraints();
    }
-
-    private void applyBoundaryConstraints(Boundary bounds){
+    private void applyBoundaryConstraints(){
         if (pos.x() + radius > bounds.x1()){
             pos = new P2d(bounds.x1() - radius, pos.y());
             vel = vel.getSwappedX();
@@ -59,7 +72,7 @@ public class Ball {
         }
     }
 
-    public void resolveCollision(BallData other) {
+    public void resolveCollisionWith(BallData other) {
         /* check if there is a collision */
 
         double dx   = other.pos().x() - pos.x();
@@ -95,7 +108,7 @@ public class Ball {
         }
     }
 
-    public void applyIncreases() {
+    public void updateAfterCollisions() {
     	pos = pos.sum(posIncrease);
         if (numCollisions > 0) {
             vel = vel.sum(velIncrease.mul(1.0 / numCollisions));
@@ -103,6 +116,13 @@ public class Ball {
     	posIncrease = new V2d(0,0);
         velIncrease = new V2d(0,0);
         numCollisions = 0;
+
+        for (Hole h : holes) {
+        	if (h.isInHole(pos)) {
+        		inHole = true;
+        		break;
+        	}
+        }
     }
 
     
@@ -126,7 +146,11 @@ public class Ball {
     	return isPlayer;
     }
 
-    public void kick(Kick kick) {
+    public boolean isInHole() {
+    	return inHole;
+    }
+
+    public void applyKick(Kick kick) {
         if (isPlayer) {
             vel = new V2d(kick.position(), pos).getNormalized().mul(Math.min(kick.strength(), 3.0));
         } else {

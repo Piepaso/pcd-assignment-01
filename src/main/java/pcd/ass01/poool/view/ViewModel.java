@@ -1,27 +1,34 @@
 package pcd.ass01.poool.view;
 
 import pcd.ass01.poool.model.BallData;
-import pcd.ass01.poool.configuration.BoardData;
+import pcd.ass01.poool.model.BoardData;
+import pcd.ass01.poool.model.Boundary;
+import pcd.ass01.poool.model.Hole;
 
 import java.util.List;
 
 public class ViewModel {
 
+	private List<Hole> holes;
 	private BoardData boardData;
-	private long startTime;
+
 	private int engineFPS = 0;
 	private int viewFPS = 0;
 	
 	public ViewModel() {
 	}
 	
-	public void init(BoardData board) {
+	public void init(BoardData board, List<Hole> holes) {
+		this.holes = holes;
 		boardData = board;
-		startTime = System.currentTimeMillis();
 	}
 	
 	public void update(BoardData board) {
 		boardData = board;
+	}
+
+	public List<Hole> getHoles() {
+		return holes;
 	}
 	
 	public List<BallData> getBalls(){
@@ -32,6 +39,14 @@ public class ViewModel {
 		return boardData.playerBall();
 	}
 
+	public int getScore() {
+		return boardData.score();
+	}
+
+	public boolean isGameOver() {
+		return boardData.gameOver();
+	}
+
 	public int getEngineFPS() {
 		return engineFPS;
 	}
@@ -40,12 +55,8 @@ public class ViewModel {
 		return viewFPS;
 	}
 
-	public long getStartTime() {
-		return startTime;
-	}
-
-	public void updateEngineFPS(Integer integer) {
-		engineFPS = integer;
+	public void updateEngineFPS(int frameCounter) {
+		engineFPS = frameCounter;
 	}
 
 	public void updateViewFPS(int frameCounter) {

@@ -1,6 +1,6 @@
 package pcd.ass01.poool;
 
-import pcd.ass01.poool.configuration.BoardData;
+import pcd.ass01.poool.model.BoardData;
 import pcd.ass01.poool.view.*;
 
 import java.util.function.Supplier;

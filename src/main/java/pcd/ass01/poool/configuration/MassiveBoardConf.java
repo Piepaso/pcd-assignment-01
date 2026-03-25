@@ -1,9 +1,6 @@
 package pcd.ass01.poool.configuration;
 
-import pcd.ass01.poool.model.Ball;
-import pcd.ass01.poool.model.Boundary;
-import pcd.ass01.poool.model.P2d;
-import pcd.ass01.poool.model.V2d;
+import pcd.ass01.poool.model.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +29,15 @@ public class MassiveBoardConf implements BoardConf {
     		}
     	}		
     	return balls;
+	}
+
+
+	@Override
+	public List<Hole> getHoles() {
+		return List.of(
+				new Hole(new P2d(-0.9, 0.9), 0.1),
+				new Hole(new P2d(0.9, 0.9), 0.1)
+		);
 	}
 
 	public Boundary getBoardBoundary() {

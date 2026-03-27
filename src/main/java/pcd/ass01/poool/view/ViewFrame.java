@@ -131,13 +131,15 @@ public class ViewFrame extends JFrame {
 	        g2.setStroke(new BasicStroke(1));
 	        g2.drawString("Num small balls: " + model.getBalls().size(), 20, 140);
 	        g2.drawString("FPS engine: " + model.getEngineFPS(), 20, 160);
-	        g2.drawString("FPS view: " + model.getViewFPS(), 20, 180);
+	        //g2.drawString("FPS view: " + model.getViewFPS(), 20, 180);
 
 			double totalKineticEnergy = model.getBalls().stream()
 				.map(b -> 0.5 * b.mass() * Math.pow(b.vel().abs(), 2))
 				.reduce(0.0, Double::sum);
 
-			g2.drawString("Total kinetic energy: " + totalKineticEnergy, 20, 220);
+			g2.drawString("Total kinetic energy: " + totalKineticEnergy, 20, 180);
+			g2.drawString("Score: " + model.getScore(), 20, 200);
+
 
         }
         

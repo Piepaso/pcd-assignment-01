@@ -6,7 +6,7 @@ import pcd.ass01.poool.controller.CmdMonitor;
 import java.util.List;
 
 public class BallsAgent extends Thread {
-	private final List<Ball> balls;
+	private List<Ball> balls;
 	private final BallsMonitor ballsMonitor;
 	private final CmdMonitor playerMonitor;
 
@@ -30,14 +30,12 @@ public class BallsAgent extends Thread {
 
 			List<BallData> allBallsData = ballsMonitor.waitForUpdatedBalls();
 
-			for (Ball b : balls) {
+			for (Ball ball : balls) {
 				for (BallData other : allBallsData) {
-					b.resolveCollisionWith(other);
+					ball.resolveCollisionWith(other);
 				}
-				b.updateAfterCollisions();
-				if (b.isInHole()) {
-					balls.remove(b);
-				}
+				ball.updateAfterCollisions();
+				balls = balls.stream().filter(b -> ! b.isInHole()).toList();
 			}
 		}
 	}

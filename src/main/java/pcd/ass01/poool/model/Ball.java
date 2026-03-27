@@ -14,7 +14,7 @@ public class Ball {
 
     private P2d pos;
     private V2d vel;
-    private boolean inHole;
+    private volatile boolean inHole;
 
     private Boundary bounds;
     private List<Hole> holes;
@@ -117,8 +117,8 @@ public class Ball {
         velIncrease = new V2d(0,0);
         numCollisions = 0;
 
-        for (Hole h : holes) {
-        	if (h.isInHole(pos)) {
+        for (Hole hole : holes) {
+        	if (hole.isIn(pos)) {
         		inHole = true;
         		break;
         	}

@@ -15,7 +15,7 @@ public class Poool {
 	public static void main(String[] argv) {
 
 		final BoardConf CONFIGURATION = new PoolConf();
-		final int THREADS = CONFIGURATION.getSmallBalls().size() > 200 ? Runtime.getRuntime().availableProcessors(): 1; // +1 view = n + 1 threads
+		final int THREADS = 1; //CONFIGURATION.getSmallBalls().size() > 100 ? Runtime.getRuntime().availableProcessors(): 1; // +1 view = n + 1 threads
 
 		Board board = new Board(CONFIGURATION);
 

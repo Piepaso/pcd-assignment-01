@@ -119,15 +119,4 @@ public class BallsMonitor {
 			lock.unlock();
 		}
 	}
-
-	public void notifyGameOver() {
-		System.out.println("Game over notified");
-		lock.lock();
-		try {
-			gameOver = true;
-			newFrameStarted.signalAll();
-		} finally {
-			lock.unlock();
-		}
-	}
 }

@@ -27,8 +27,8 @@ public class ViewAgent extends Thread {
 			BoardData boardData = boardSupplier.get();
 			viewModel.update(boardData);
 			view.render();
-
 			frameCounter++;
+
 			if (System.nanoTime() - previousFPSUpdate >= 1_000_000_000L) {
 				viewModel.updateEngineFPS(engineFPSgetter.get());
 				viewModel.updateViewFPS(frameCounter);

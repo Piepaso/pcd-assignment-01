@@ -10,15 +10,17 @@ import java.util.*;
 public class Board {
 
     private final Boundary bounds;
-    private final List<Ball> balls;
+    private List<Ball> balls;
 	private final List<Hole> holes;
 	private final List<BallsAgent> agents = new ArrayList<>();
 	private int score = 0;
 	private BallsMonitor ballsMonitor;
+	private final Ball playerBall;
 
     public Board(BoardConf conf) {
 	    bounds = conf.getBoardBoundary();
 		holes = conf.getHoles();
+		playerBall = conf.getPlayerBall();
 	    balls = new ArrayList<>(conf.getSmallBalls());
 	    balls.add(conf.getPlayerBall());
 		for (Ball b : balls) {
@@ -32,7 +34,11 @@ public class Board {
 		for (int i = 0; i < ballsThreadNum; i++) {
 			int fromIndex = i * balls.size() / ballsThreadNum;
 			int toIndex = (i + 1) * balls.size() / ballsThreadNum;
-			agents.add(new BallsAgent(balls.subList(fromIndex, toIndex), ballsMonitor, playerMonitor));
+			List<Ball> threadBalls = new ArrayList<>();
+			for (int j = fromIndex; j < toIndex; j++) {
+				threadBalls.add(balls.get(j));
+			}
+			agents.add(new BallsAgent(threadBalls, ballsMonitor, playerMonitor));
 		}
 		agents.forEach(Thread::start);
 	}
@@ -44,13 +50,8 @@ public class Board {
 				ballInHole(b);
 			}
 		}
-		Ball playerBall = balls.get(balls.size() - 1);
-		boolean gameOver = playerBall.isInHole();
 
-		if (gameOver) {
-			agents.forEach(Thread::interrupt);
-			ballsMonitor.notifyGameOver();
-		}
+		boolean gameOver = playerBall.isInHole();
 
 		return new BoardData(
 			balls.stream().map(BallData::new).toList(),
@@ -60,11 +61,11 @@ public class Board {
 		);
 	}
 
-	private void ballInHole(Ball b) {
-		if (!b.isPlayer()) {
+	private void ballInHole(Ball ball) {
+		if (!ball.isPlayer()) {
 			score++;
 		}
-		balls.remove(b);
+		balls = balls.stream().filter(b -> b != ball).toList();
 	}
 
 	public List<Hole> getHoles() {

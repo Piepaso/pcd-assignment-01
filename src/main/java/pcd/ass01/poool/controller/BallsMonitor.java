@@ -26,7 +26,6 @@ public class BallsMonitor {
 	private volatile BoardData boardData;
 	private volatile List<BallData> uncollisionedBallsData;
 	private volatile boolean updated;
-	private volatile boolean gameOver;
 
 	public BallsMonitor(Board board, int threadsNum) {
 		this.threadsNum = threadsNum;
@@ -97,7 +96,7 @@ public class BallsMonitor {
 	public BoardData getUpdatedBoardData() {
 		lock.lock();
 		try {
-			while (updated && !gameOver) {
+			while (updated) {
 				newFrameStarted.await();
 			}
 			updated = true;

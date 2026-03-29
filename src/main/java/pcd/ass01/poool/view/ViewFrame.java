@@ -129,6 +129,7 @@ public class ViewFrame extends JFrame {
 	        g2.drawString("FPS engine: " + model.getEngineFPS(), 20, 160);
 	        g2.drawString("FPS view: " + model.getViewFPS(), 20, 180);
 			g2.drawString("Score: " + model.getScore(), 20, 200);
+
 	        renderMonitor.signal();
         }
         

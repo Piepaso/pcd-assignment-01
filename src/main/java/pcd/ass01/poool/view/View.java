@@ -7,8 +7,8 @@ public class View {
 
 	private ViewFrame frame;
 	
-	public View(ViewModel model, ActiveController controller) {
-		frame = new ViewFrame(model, controller, 1000, 1000);
+	public View(ViewModel model, ActiveController controller, RenderMonitor renderMonitor) {
+		frame = new ViewFrame(model, controller, renderMonitor, 1000, 1000);
 		frame.setVisible(true);
 	}
 		

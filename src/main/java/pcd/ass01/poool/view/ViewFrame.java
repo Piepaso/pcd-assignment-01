@@ -4,7 +4,6 @@ import pcd.ass01.poool.controller.ActiveController;
 import pcd.ass01.poool.controller.PressedCmd;
 import pcd.ass01.poool.controller.ReleasedCmd;
 import pcd.ass01.poool.model.P2d;
-import pcd.ass01.poool.model.V2d;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -15,18 +14,17 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.util.stream.Stream;
 import javax.swing.*;
 
 public class ViewFrame extends JFrame {
-    
+
     private final VisualiserPanel panel;
     private final ViewModel model;
-	private final ActiveController controller;
+	private final RenderMonitor renderMonitor;
     
-    public ViewFrame(ViewModel model, ActiveController controller, int w, int h){
+    public ViewFrame(ViewModel model, ActiveController controller, RenderMonitor renderMonitor, int w, int h){
     	this.model = model;
-		this.controller = controller;
+		this.renderMonitor = renderMonitor;
 
     	setTitle("Poool");
         setSize(w,h + 25);
@@ -69,8 +67,8 @@ public class ViewFrame extends JFrame {
     }
         
     public class VisualiserPanel extends JPanel {
-        private int dx;
-        private int dy;
+        private final int dx;
+        private final int dy;
         
         public VisualiserPanel(int w, int h){
             setSize(w,h + 25);
@@ -102,8 +100,6 @@ public class ViewFrame extends JFrame {
 	        }
     		g2.setColor(Color.LIGHT_GRAY);
 
-
-
 			/* Render balls */
             for (var b: model.getBalls()) {
                 var p = b.pos();
@@ -131,22 +127,14 @@ public class ViewFrame extends JFrame {
 	        g2.setStroke(new BasicStroke(1));
 	        g2.drawString("Num small balls: " + model.getBalls().size(), 20, 140);
 	        g2.drawString("FPS engine: " + model.getEngineFPS(), 20, 160);
-	        //g2.drawString("FPS view: " + model.getViewFPS(), 20, 180);
-
-			double totalKineticEnergy = model.getBalls().stream()
-				.map(b -> 0.5 * b.mass() * Math.pow(b.vel().abs(), 2))
-				.reduce(0.0, Double::sum);
-
-			g2.drawString("Total kinetic energy: " + totalKineticEnergy, 20, 180);
+	        g2.drawString("FPS view: " + model.getViewFPS(), 20, 180);
 			g2.drawString("Score: " + model.getScore(), 20, 200);
-
-
+	        renderMonitor.signal();
         }
         
     }
 
 	private P2d getNormalizedPos(MouseEvent e) {
-		long time = System.currentTimeMillis();
 		double normX = (e.getX() - panel.dx) / (double) panel.dx;
 		double normY = (panel.dy - e.getY()) / (double) panel.dy;
 		return new P2d(normX, normY);

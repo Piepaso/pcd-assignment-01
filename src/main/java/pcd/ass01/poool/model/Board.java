@@ -29,7 +29,7 @@ public class Board {
 		}
     }
 
-	public void startBalls(BallsMonitor ballsMonitor, CmdMonitor playerMonitor, int ballsThreadNum) {
+	public void startEngine(BallsMonitor ballsMonitor, CmdMonitor playerMonitor, int ballsThreadNum) {
 		this.ballsMonitor = ballsMonitor;
 		for (int i = 0; i < ballsThreadNum; i++) {
 			int fromIndex = i * balls.size() / ballsThreadNum;
@@ -45,12 +45,8 @@ public class Board {
 
 	public BoardData getData() {
 
-		for (Ball b : balls) {
-			if (b.isInHole()) {
-				ballInHole(b);
-			}
-		}
-
+		balls.forEach(b -> score += b.isInHole() && !b.isPlayer() ? 1 : 0);
+		balls.removeIf(Ball::isInHole);
 		boolean gameOver = playerBall.isInHole();
 
 		return new BoardData(
@@ -59,13 +55,6 @@ public class Board {
 			score,
 			gameOver
 		);
-	}
-
-	private void ballInHole(Ball ball) {
-		if (!ball.isPlayer()) {
-			score++;
-		}
-		balls = balls.stream().filter(b -> b != ball).toList();
 	}
 
 	public List<Hole> getHoles() {

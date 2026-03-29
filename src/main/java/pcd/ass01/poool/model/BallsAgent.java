@@ -35,8 +35,8 @@ public class BallsAgent extends Thread {
 					ball.resolveCollisionWith(other);
 				}
 				ball.updateAfterCollisions();
-				balls = balls.stream().filter(b -> ! b.isInHole()).toList();
 			}
+			balls.removeIf(Ball::isInHole);
 		}
 	}
 }

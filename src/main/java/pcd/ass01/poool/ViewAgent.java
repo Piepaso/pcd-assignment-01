@@ -1,5 +1,6 @@
 package pcd.ass01.poool;
 
+import pcd.ass01.poool.controller.BallsMonitor;
 import pcd.ass01.poool.model.BoardData;
 import pcd.ass01.poool.view.*;
 
@@ -9,33 +10,37 @@ public class ViewAgent extends Thread {
 
 	private final View view;
 	private final ViewModel viewModel;
-	private final Supplier<BoardData> boardSupplier;
-	private final Supplier<Integer> engineFPSgetter;
+	private final BallsMonitor ballsMonitor;
+	private final RenderMonitor renderMonitor;
 
-	public ViewAgent(View view, ViewModel viewModel, Supplier<BoardData> boardSupplier, Supplier<Integer> fps) {
+	private int frameCounter = 0;
+
+	public ViewAgent(View view, ViewModel viewModel, BallsMonitor ballsMonitor, RenderMonitor renderMonitor) {
 		this.view = view;
 		this.viewModel = viewModel;
-		this.boardSupplier = boardSupplier;
-		this.engineFPSgetter = fps;
+		this.ballsMonitor = ballsMonitor;
+		this.renderMonitor = renderMonitor;
 	}
 
 	public void run() {
-		long previousFPSUpdate = System.nanoTime();
-		int frameCounter = 0;
+		long previousFPSUpdate = System.currentTimeMillis();
 
 		while (true) {
-			BoardData boardData = boardSupplier.get();
+			BoardData boardData = ballsMonitor.getUpdatedBoardData();
 			viewModel.update(boardData);
-			view.render();
-			frameCounter++;
 
-			if (System.nanoTime() - previousFPSUpdate >= 1_000_000_000L) {
-				viewModel.updateEngineFPS(engineFPSgetter.get());
+
+			if (System.currentTimeMillis() - previousFPSUpdate >= 1000) {
+				viewModel.updateEngineFPS(ballsMonitor.getFrames());
 				viewModel.updateViewFPS(frameCounter);
-				previousFPSUpdate = System.nanoTime();
+				previousFPSUpdate = System.currentTimeMillis();
 				frameCounter = 0;
 			}
 
+			view.render();
+			renderMonitor.await();
+
+			frameCounter++;
 		}
 	}
 }

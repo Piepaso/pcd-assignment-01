@@ -15,10 +15,7 @@ public class ViewModel {
 	private int engineFPS = 0;
 	private int viewFPS = 0;
 	
-	public ViewModel() {
-	}
-	
-	public void init(BoardData board, List<Hole> holes) {
+	public ViewModel(BoardData board, List<Hole> holes) {
 		this.holes = holes;
 		boardData = board;
 	}

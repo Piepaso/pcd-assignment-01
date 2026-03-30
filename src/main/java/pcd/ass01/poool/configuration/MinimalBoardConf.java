@@ -3,13 +3,14 @@ package pcd.ass01.poool.configuration;
 import pcd.ass01.poool.model.*;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class MinimalBoardConf implements BoardConf {
 
 	@Override
-	public Ball getPlayerBall() {
-    	return new Ball(new P2d(0, 0), 0.06, 1, new V2d(0,0.5), true);
+	public List<Ball> getPlayerBall() {
+    	return Collections.singletonList(new Ball(new P2d(0, 0), 0.06, 1, new V2d(0, 0.5), true));
 	}
 
 	@Override

@@ -1,6 +1,9 @@
 package pcd.ass01.poool.model;
 
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Ball {
 
@@ -14,6 +17,8 @@ public class Ball {
 
     private P2d pos;
     private V2d vel;
+
+    private int lastCollisionPlayerId;
     private volatile boolean inHole;
 
     private Boundary bounds;
@@ -21,6 +26,7 @@ public class Ball {
     private V2d posIncrease;
     private V2d velIncrease;
     private int numCollisions;
+    private final Map<Integer, Double> impContributions;
 
     
     public Ball(P2d pos, double radius, double mass, V2d vel, boolean isPlayer) {
@@ -32,8 +38,10 @@ public class Ball {
 
        posIncrease = new V2d(0,0);
        velIncrease = new V2d(0,0);
+       lastCollisionPlayerId = -1;
        numCollisions = 0;
        inHole = false;
+       impContributions = new HashMap<>();
     }
 
     public void setBounds(Boundary bounds) {
@@ -102,7 +110,10 @@ public class Ball {
 
             if (dvn <= 0) { /* if not already separating, update velocities */
                 double imp = -(1 + RESTITUTION_FACTOR) * dvn / (1.0/mass + 1.0/other.mass());
-                velIncrease = velIncrease.sum(new V2d(- (imp / mass) * nx, - (imp / mass) * ny));
+                velIncrease = new V2d(- (imp / mass) * nx, - (imp / mass) * ny);
+                if (!isPlayer) {
+                    impContributions.put(lastCollisionPlayerId, impContributions.getOrDefault(lastCollisionPlayerId, 0.0) + imp);
+                }
                 numCollisions++;
             }
         }
@@ -115,6 +126,13 @@ public class Ball {
         }
     	posIncrease = new V2d(0,0);
         velIncrease = new V2d(0,0);
+
+        if (!isPlayer) {
+            var maxImpulse = impContributions.entrySet().stream().max(Comparator.comparingDouble(Map.Entry::getValue));
+            maxImpulse.ifPresent(integerDoubleEntry -> lastCollisionPlayerId = integerDoubleEntry.getKey());
+            impContributions.clear();
+        }
+
         numCollisions = 0;
 
         for (Hole hole : holes) {
@@ -148,6 +166,10 @@ public class Ball {
 
     public boolean isInHole() {
     	return inHole;
+    }
+
+    public int getLastCollisionPlayerId() {
+        return lastCollisionPlayerId;
     }
 
     public void applyKick(Kick kick) {

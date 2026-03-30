@@ -6,7 +6,7 @@ import pcd.ass01.poool.controller.CmdMonitor;
 import java.util.List;
 
 public class BallsAgent extends Thread {
-	private List<Ball> balls;
+	private final List<Ball> balls;
 	private final BallsMonitor ballsMonitor;
 	private final CmdMonitor playerMonitor;
 

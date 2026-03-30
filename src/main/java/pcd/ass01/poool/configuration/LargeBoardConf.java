@@ -3,13 +3,14 @@ package pcd.ass01.poool.configuration;
 import pcd.ass01.poool.model.*;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class LargeBoardConf implements BoardConf {
 
 	@Override
-	public Ball getPlayerBall() {
-		return  new  Ball(new P2d(0, -0.75), 0.05, 1.5, new V2d(0,1), true);
+	public List<Ball> getPlayerBall() {
+		return Collections.singletonList(new Ball(new P2d(0, -0.75), 0.05, 1.5, new V2d(0, 1), true));
 	}
 
 	@Override

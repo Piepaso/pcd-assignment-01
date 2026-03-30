@@ -3,6 +3,7 @@ package pcd.ass01.poool.configuration;
 import pcd.ass01.poool.model.*;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
@@ -14,7 +15,7 @@ public class PoolConf implements BoardConf {
 	private final static P2d START_VERTEX = new P2d(0, 0);
 
 	private final static Boundary BOUNDARY = new Boundary(-1.0, -1.0, 1.0, 1.0);
-	private final static Ball PLAYER_BALL = new Ball(new P2d(0, -0.75), 0.03, 2.0, new V2d(0, 2), true);
+	private final static Ball PLAYER_BALL = new Ball(new P2d(0, -0.75), 0.03, 2.0, new V2d(0, 0), true);
 
 	@Override
 	public Boundary getBoardBoundary() {
@@ -22,8 +23,8 @@ public class PoolConf implements BoardConf {
 	}
 
 	@Override
-	public Ball getPlayerBall() {
-		return PLAYER_BALL;
+	public List<Ball> getPlayerBall() {
+		return Collections.singletonList(PLAYER_BALL);
 	}
 
 	@Override

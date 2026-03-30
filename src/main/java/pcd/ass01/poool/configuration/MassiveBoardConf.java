@@ -3,6 +3,7 @@ package pcd.ass01.poool.configuration;
 import pcd.ass01.poool.model.*;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class MassiveBoardConf implements BoardConf {
@@ -11,8 +12,8 @@ public class MassiveBoardConf implements BoardConf {
 	private final static int N_COLS = 150;
 
 	@Override
-	public Ball getPlayerBall() {
-		return  new Ball(new P2d(0, -0.75), 0.05, 20.0, new V2d(0,0.5), true);
+	public List<Ball> getPlayerBall() {
+		return Collections.singletonList(new Ball(new P2d(0, -0.75), 0.05, 20.0, new V2d(0, 0.5), true));
 	}
 
 	@Override

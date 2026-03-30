@@ -13,16 +13,17 @@ public class Board {
     private List<Ball> balls;
 	private final List<Hole> holes;
 	private final List<BallsAgent> agents = new ArrayList<>();
-	private int score = 0;
-	private BallsMonitor ballsMonitor;
-	private final Ball playerBall;
+	private final List<Player> players = new  ArrayList<>();
 
     public Board(BoardConf conf) {
 	    bounds = conf.getBoardBoundary();
 		holes = conf.getHoles();
-		playerBall = conf.getPlayerBall();
 	    balls = new ArrayList<>(conf.getSmallBalls());
-	    balls.add(conf.getPlayerBall());
+        for (Ball pb : conf.getPlayerBall()) {
+            players.add(new Player(pb));
+            balls.add(pb);
+        }
+
 		for (Ball b : balls) {
 			b.setBounds(bounds);
 			b.setHoles(holes);
@@ -30,8 +31,7 @@ public class Board {
     }
 
 	public void startEngine(BallsMonitor ballsMonitor, CmdMonitor playerMonitor, int ballsThreadNum) {
-		this.ballsMonitor = ballsMonitor;
-		for (int i = 0; i < ballsThreadNum; i++) {
+        for (int i = 0; i < ballsThreadNum; i++) {
 			int fromIndex = i * balls.size() / ballsThreadNum;
 			int toIndex = (i + 1) * balls.size() / ballsThreadNum;
 			List<Ball> threadBalls = new ArrayList<>();
@@ -45,7 +45,7 @@ public class Board {
 
 	public BoardData getData() {
 
-		balls.forEach(b -> score += b.isInHole() && !b.isPlayer() ? 1 : 0);
+		balls.stream().filter(b -> b.isInHole() && !b.isPlayer()).forEach(b -> )
 		balls.removeIf(Ball::isInHole);
 		boolean gameOver = playerBall.isInHole();
 

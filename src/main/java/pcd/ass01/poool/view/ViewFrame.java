@@ -14,6 +14,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.Map;
 import javax.swing.*;
 
 public class ViewFrame extends JFrame {
@@ -21,6 +22,11 @@ public class ViewFrame extends JFrame {
     private final VisualiserPanel panel;
     private final ViewModel model;
 	private final RenderMonitor renderMonitor;
+	private static final Map<Integer, Color> PLAYER_COLORS = Map.of(
+			0, Color.YELLOW,
+			1, Color.RED,
+			2, Color.PINK
+			);
     
     public ViewFrame(ViewModel model, ActiveController controller, RenderMonitor renderMonitor, int w, int h){
     	this.model = model;
@@ -98,10 +104,14 @@ public class ViewFrame extends JFrame {
 		        int radiusY = (int)(h.radius()*dy);
 		        g2.fillOval(x0 - radiusX,y0 - radiusY,radiusX*2,radiusY*2);
 	        }
-    		g2.setColor(Color.LIGHT_GRAY);
 
 			/* Render balls */
+	        int lastColor = -2;
             for (var b: model.getBalls()) {
+				if (b.lastCollisionPlayerId() != lastColor) {
+					lastColor = b.lastCollisionPlayerId();
+					g2.setColor(PLAYER_COLORS.getOrDefault(lastColor, Color.LIGHT_GRAY));
+				}
                 var p = b.pos();
                 int x0 = (int)(dx + p.x()*dx);
                 int y0 = (int)(dy - p.y()*dy);
@@ -112,23 +122,24 @@ public class ViewFrame extends JFrame {
 
 			/* Render player */
             g2.setStroke(new BasicStroke(3));
-            var pb = model.getPlayerBall();
-            if (pb != null) {
-				var p1 = pb.pos();
-	            int x0 = (int)(dx + p1.x()*dx);
-	            int y0 = (int)(dy - p1.y()*dy);
-                int radiusX = (int)(pb.radius()*dx);
-                int radiusY = (int)(pb.radius()*dy);
-                g2.fillOval(x0 - radiusX,y0 - radiusY,radiusX*2,radiusY*2);
-	            g2.setColor(Color.BLACK);
-				g2.drawString("H", x0 - 4, y0 + 4);
-            }
+            for (var p: model.getPlayers()) {
+	            var b = p.ball();
+	            var pos = b.pos();
+	            int x0 = (int)(dx + pos.x()*dx);
+	            int y0 = (int)(dy - pos.y()*dy);
+	            int radiusX = (int)(b.radius()*dx);
+	            int radiusY = (int)(b.radius()*dy);
+	            g2.setColor(PLAYER_COLORS.getOrDefault(p.id(), Color.GRAY));
+	            g2.fillOval(x0 - radiusX,y0 - radiusY,radiusX*2,radiusY*2);
+				g2.drawString("Player " + p.id() + " score: " + p.score(), 20, 120 + 20*p.id());
+			}
+
+			g2.setColor(Color.LIGHT_GRAY);
 
 	        g2.setStroke(new BasicStroke(1));
-	        g2.drawString("Num small balls: " + model.getBalls().size(), 20, 140);
-	        g2.drawString("FPS engine: " + model.getEngineFPS(), 20, 160);
-	        g2.drawString("FPS view: " + model.getViewFPS(), 20, 180);
-			g2.drawString("Score: " + model.getScore(), 20, 200);
+	        g2.drawString("Num small balls: " + model.getBalls().size(), 20, 60);
+	        g2.drawString("FPS engine: " + model.getEngineFPS(), 20, 80);
+	        g2.drawString("FPS view: " + model.getViewFPS(), 20, 100);
 
 	        renderMonitor.signal();
         }

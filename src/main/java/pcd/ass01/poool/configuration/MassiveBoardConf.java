@@ -13,7 +13,7 @@ public class MassiveBoardConf implements BoardConf {
 
 	@Override
 	public List<Ball> getPlayerBall() {
-		return Collections.singletonList(new Ball(new P2d(0, -0.75), 0.05, 20.0, new V2d(0, 0.5), true));
+		return Collections.singletonList(new Ball(new P2d(0, -0.75), 0.05, 20.0, new V2d(0, 0.5), 0));
 	}
 
 	@Override
@@ -25,7 +25,7 @@ public class MassiveBoardConf implements BoardConf {
     		for (int col = 0; col < N_COLS; col++) {
         		var px = -1.0 + ballRadius + col * ballRadius*3;
         		var py =  row * ballRadius*3;
-        		var b = new Ball(new P2d(px, py), ballRadius, 0.25, new V2d(0,0), false);
+        		var b = new Ball(new P2d(px, py), ballRadius, 0.25, new V2d(0,0), -1);
             	balls.add(b);    			
     		}
     	}		

@@ -10,7 +10,7 @@ public class LargeBoardConf implements BoardConf {
 
 	@Override
 	public List<Ball> getPlayerBall() {
-		return Collections.singletonList(new Ball(new P2d(0, -0.75), 0.05, 1.5, new V2d(0, 1), true));
+		return Collections.singletonList(new Ball(new P2d(0, -0.75), 0.05, 1.5, new V2d(0, 1), 0));
 	}
 
 	@Override
@@ -22,7 +22,7 @@ public class LargeBoardConf implements BoardConf {
     		for (int col = 0; col < 20; col++) {
         		var px = -0.25 + col*0.025;
         		var py =  row*0.025;
-        		var b = new Ball(new P2d(px, py), ballRadius, 0.25, new V2d(0,0), false);
+        		var b = new Ball(new P2d(px, py), ballRadius, 0.25, new V2d(0,0), -1);
             	balls.add(b);    			
     		}
     	}		

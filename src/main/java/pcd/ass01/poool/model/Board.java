@@ -19,8 +19,10 @@ public class Board {
 	    bounds = conf.getBoardBoundary();
 		holes = conf.getHoles();
 	    balls = new ArrayList<>(conf.getSmallBalls());
+
+		int i = 0;
         for (Ball pb : conf.getPlayerBall()) {
-            players.add(new Player(pb));
+            players.add(new Player(i++, pb));
             balls.add(pb);
         }
 
@@ -45,15 +47,14 @@ public class Board {
 
 	public BoardData getData() {
 
-		balls.stream().filter(b -> b.isInHole() && !b.isPlayer()).forEach(b -> )
+		balls.stream().filter(b -> b.isInHole() && b.getLastCollisionPlayerId() >= 0)
+				.forEach(b -> players.get(b.getLastCollisionPlayerId()).incrementScore(1));
 		balls.removeIf(Ball::isInHole);
-		boolean gameOver = playerBall.isInHole();
 
 		return new BoardData(
 			balls.stream().map(BallData::new).toList(),
-			new BallData(playerBall),
-			score,
-			gameOver
+			players.stream().map(PlayerData::new).toList(),
+			false
 		);
 	}
 

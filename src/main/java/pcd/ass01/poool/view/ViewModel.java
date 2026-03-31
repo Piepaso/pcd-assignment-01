@@ -1,9 +1,6 @@
 package pcd.ass01.poool.view;
 
-import pcd.ass01.poool.model.BallData;
-import pcd.ass01.poool.model.BoardData;
-import pcd.ass01.poool.model.Boundary;
-import pcd.ass01.poool.model.Hole;
+import pcd.ass01.poool.model.*;
 
 import java.util.List;
 
@@ -32,12 +29,8 @@ public class ViewModel {
 		return boardData.balls();
 	}
 	
-	public BallData getPlayerBall() {
-		return boardData.playerBall();
-	}
-
-	public int getScore() {
-		return boardData.score();
+	public List<PlayerData> getPlayers() {
+		return boardData.players();
 	}
 
 	public boolean isGameOver() {

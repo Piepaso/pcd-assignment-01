@@ -15,7 +15,6 @@ public class PoolConf implements BoardConf {
 	private final static P2d START_VERTEX = new P2d(0, 0);
 
 	private final static Boundary BOUNDARY = new Boundary(-1.0, -1.0, 1.0, 1.0);
-	private final static Ball PLAYER_BALL = new Ball(new P2d(0, -0.75), 0.03, 2.0, new V2d(0, 0), true);
 
 	@Override
 	public Boundary getBoardBoundary() {
@@ -24,13 +23,16 @@ public class PoolConf implements BoardConf {
 
 	@Override
 	public List<Ball> getPlayerBall() {
-		return Collections.singletonList(PLAYER_BALL);
+		return List.of(
+				new Ball(new P2d(-0.2, -0.75), 0.03, 2.0, new V2d(0, 0), 0),
+				new Ball(new P2d(0.2, -0.75), 0.03, 2.0, new V2d(0, 0), 1)
+		);
 	}
 
 	@Override
 	public List<Ball> getSmallBalls() {
 		return generateTriangle().stream()
-			.map(p -> new Ball(p, BALL_RADIUS, BALL_MASS, new V2d(0, 0), false))
+			.map(p -> new Ball(p, BALL_RADIUS, BALL_MASS, new V2d(0, 0), -1))
 			.toList();
 	}
 

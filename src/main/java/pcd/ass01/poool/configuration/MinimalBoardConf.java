@@ -10,14 +10,14 @@ public class MinimalBoardConf implements BoardConf {
 
 	@Override
 	public List<Ball> getPlayerBall() {
-    	return Collections.singletonList(new Ball(new P2d(0, 0), 0.06, 1, new V2d(0, 0.5), true));
+    	return Collections.singletonList(new Ball(new P2d(0, 0), 0.06, 1, new V2d(0, 0.5), 0));
 	}
 
 	@Override
 	public List<Ball> getSmallBalls() {
         var balls = new ArrayList<Ball>();
-    	var b1 = new Ball(new P2d(0, 0.5), 0.05, 0.75, new V2d(0,0), false);
-    	var b2 = new Ball(new P2d(0.05, 0.55), 0.025, 0.25, new V2d(0,0), false);
+    	var b1 = new Ball(new P2d(0, 0.5), 0.05, 0.75, new V2d(0,0), -1);
+    	var b2 = new Ball(new P2d(0.05, 0.55), 0.025, 0.25, new V2d(0,0), -1);
     	balls.add(b1);
     	balls.add(b2);
     	return balls;

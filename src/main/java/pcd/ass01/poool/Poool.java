@@ -4,6 +4,7 @@ import pcd.ass01.poool.configuration.BoardConf;
 import pcd.ass01.poool.configuration.PoolConf;
 import pcd.ass01.poool.controller.ActiveController;
 import pcd.ass01.poool.controller.BallsMonitor;
+import pcd.ass01.poool.controller.BotAgent;
 import pcd.ass01.poool.controller.CmdMonitor;
 import pcd.ass01.poool.model.*;
 import pcd.ass01.poool.view.RenderMonitor;
@@ -30,8 +31,11 @@ public class Poool {
 
 		ViewAgent viewAgent = new ViewAgent(view, viewModel, ballsMonitor, renderMonitor);
 
+		BotAgent botAgent = new BotAgent(cmdMonitor, 1000);
+
 		board.startEngine(ballsMonitor, cmdMonitor, THREADS);
 		controller.start();
 		viewAgent.start();
+		botAgent.start();
 	}
 }

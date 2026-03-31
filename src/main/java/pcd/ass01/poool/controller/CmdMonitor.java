@@ -3,56 +3,37 @@ package pcd.ass01.poool.controller;
 import pcd.ass01.poool.model.Kick;
 import pcd.ass01.poool.model.P2d;
 
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
-
 public class CmdMonitor {
 
-	private final Lock lock = new ReentrantLock();
-
 	private long pressedTime = -1;
-	private Kick kick;
-	private volatile boolean kickAvailable;
+	private final Kick[] kicks = new Kick[10];
 
-	public void mousePressed(long time) {
-		lock.lock();
-		try {
-			pressedTime = time;
-		} finally {
-			lock.unlock();
+	public synchronized void mousePressed(long time) {
+		this.pressedTime = time;
+	}
+
+	public synchronized void mouseReleased(P2d position, long time) {
+		if (pressedTime != -1) {
+			kicks[0] = new Kick(position, pressedTime, time);
+			pressedTime = -1;
 		}
 	}
 
-	public void mouseReleased(P2d position, long time) {
-		lock.lock();
+	public synchronized void botKick(int playerId, P2d position, double strength) {
+		kicks[playerId] = new Kick(position, strength);
+	}
 
-		try {
-			if (pressedTime != -1) {
-				kick = new Kick(position, pressedTime, time);
-				kickAvailable = true;
-				pressedTime = -1;
-			}
-		} finally {
-			lock.unlock();
+	public synchronized boolean isKickAvailable(int playerId) {
+		return kicks[playerId] != null;
+	}
+
+	public synchronized Kick consumeKick(int playerId) {
+		if (kicks[playerId] != null) {
+			Kick k = kicks[playerId];
+			kicks[playerId] = null;
+			return k;
+		} else {
+			throw new IllegalStateException("Kick not available for player: " + playerId);
 		}
 	}
-
-	public boolean isKickAvailable() {  // can ask without locking for better performance
-		return kickAvailable;
-	}
-
-	public Kick consumeKick() {
-		lock.lock();
-		try {
-			if (kickAvailable) {
-				kickAvailable = false;
-				return kick;
-			} else {
-				throw new IllegalStateException("Kick not available");
-			}
-		} finally {
-			lock.unlock();
-		}
-	}
-
 }

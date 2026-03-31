@@ -1,19 +1,16 @@
 package pcd.ass01.poool.model;
 
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Ball {
 
-    private final static double FRICTION_FACTOR = 0.00; // 0.01 min 0.02 buono
+    private final static double FRICTION_FACTOR = 0.02; // 0.01 min 0.02 buono
     private final static double RESTITUTION_FACTOR = 1.0;
     private final static double MIN_SPEED = 0.0001;
 
     private final double radius;
     private final double mass;
-    private final boolean isPlayer;
+    private final int playerId;
 
     private P2d pos;
     private V2d vel;
@@ -26,11 +23,10 @@ public class Ball {
     private V2d posIncrease;
     private V2d velIncrease;
     private int numCollisions;
-    private final Map<Integer, Double> impContributions;
-
+    private final double[] impContributions;
     
-    public Ball(P2d pos, double radius, double mass, V2d vel, boolean isPlayer) {
-       this.isPlayer = isPlayer;
+    public Ball(P2d pos, double radius, double mass, V2d vel, int playerId) {
+       this.playerId = playerId;
        this.pos = pos;
        this.radius = radius;
        this.mass = mass;
@@ -38,10 +34,10 @@ public class Ball {
 
        posIncrease = new V2d(0,0);
        velIncrease = new V2d(0,0);
-       lastCollisionPlayerId = -1;
+       lastCollisionPlayerId = playerId;
        numCollisions = 0;
        inHole = false;
-       impContributions = new HashMap<>();
+       impContributions = new double[10];
     }
 
     public void setBounds(Boundary bounds) {
@@ -101,7 +97,6 @@ public class Ball {
             posIncrease = posIncrease.sum(new V2d(- nx * a_factor, - ny * a_factor));
 
             /* Update velocities  */
-
             /* relative speed along the normal vector*/
 
             double dvx = other.vel().x() - vel.x();
@@ -111,8 +106,9 @@ public class Ball {
             if (dvn <= 0) { /* if not already separating, update velocities */
                 double imp = -(1 + RESTITUTION_FACTOR) * dvn / (1.0/mass + 1.0/other.mass());
                 velIncrease = new V2d(- (imp / mass) * nx, - (imp / mass) * ny);
-                if (!isPlayer) {
-                    impContributions.put(lastCollisionPlayerId, impContributions.getOrDefault(lastCollisionPlayerId, 0.0) + imp);
+                var otherPlayerId = other.lastCollisionPlayerId();
+                if (!isPlayer() && otherPlayerId >= 0) {
+                    impContributions[otherPlayerId] += imp;
                 }
                 numCollisions++;
             }
@@ -127,10 +123,18 @@ public class Ball {
     	posIncrease = new V2d(0,0);
         velIncrease = new V2d(0,0);
 
-        if (!isPlayer) {
-            var maxImpulse = impContributions.entrySet().stream().max(Comparator.comparingDouble(Map.Entry::getValue));
-            maxImpulse.ifPresent(integerDoubleEntry -> lastCollisionPlayerId = integerDoubleEntry.getKey());
-            impContributions.clear();
+        if (!isPlayer()) {
+            int maxIdx = lastCollisionPlayerId;
+            double max = 0;
+
+            for (int i = 0; i < impContributions.length; i++) {
+                if (impContributions[i] > max) {
+                    maxIdx = i;
+                    max = impContributions[i];
+                }
+                impContributions[i] = 0;
+            }
+            lastCollisionPlayerId = maxIdx;
         }
 
         numCollisions = 0;
@@ -161,11 +165,19 @@ public class Ball {
     }
 
     public boolean isPlayer() {
-    	return isPlayer;
+    	return playerId >= 0;
     }
 
     public boolean isInHole() {
     	return inHole;
+    }
+
+    public int getPlayerId() {
+        if (isPlayer()) {
+            return playerId;
+        } else {
+            throw new IllegalStateException("Only player ball has a player id");
+        }
     }
 
     public int getLastCollisionPlayerId() {
@@ -173,8 +185,9 @@ public class Ball {
     }
 
     public void applyKick(Kick kick) {
-        if (isPlayer) {
-            vel = new V2d(kick.position(), pos).getNormalized().mul(Math.min(kick.strength(), 3.0));
+        if (isPlayer()) {
+            if (vel.abs() == 0)
+                vel = new V2d(kick.position(), pos).getNormalized().mul(Math.min(kick.strength(), 3.0));
         } else {
             throw new IllegalStateException("Only player ball can be kicked");
         }

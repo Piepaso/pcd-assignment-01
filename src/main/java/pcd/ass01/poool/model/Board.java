@@ -9,16 +9,18 @@ import java.util.*;
 
 public class Board {
 
-    private final Boundary bounds;
+	private final Boundary bounds;
     private List<Ball> balls;
 	private final List<Hole> holes;
 	private final List<BallsAgent> agents = new ArrayList<>();
 	private final List<Player> players = new  ArrayList<>();
+	private final int win_score;
 
     public Board(BoardConf conf) {
 	    bounds = conf.getBoardBoundary();
 		holes = conf.getHoles();
 	    balls = new ArrayList<>(conf.getSmallBalls());
+		win_score = conf.getSmallBalls().size() / conf.getPlayerBall().size() + 1;
 
 		int i = 0;
         for (Ball pb : conf.getPlayerBall()) {
@@ -51,10 +53,13 @@ public class Board {
 				.forEach(b -> players.get(b.getLastCollisionPlayerId()).incrementScore(1));
 		balls.removeIf(Ball::isInHole);
 
+		boolean gameOver = players.stream().anyMatch(p -> p.score() >= win_score) ||
+				players.stream().filter(p -> !p.ball().isInHole()).count() <= 1;
+
 		return new BoardData(
 			balls.stream().map(BallData::new).toList(),
 			players.stream().map(PlayerData::new).toList(),
-			false
+			gameOver
 		);
 	}
 

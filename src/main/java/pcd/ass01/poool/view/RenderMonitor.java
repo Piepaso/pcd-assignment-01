@@ -5,7 +5,9 @@ public class RenderMonitor {
 		try {
 			wait();
 		} catch (InterruptedException e) {
-			Thread.currentThread().interrupt();
+			e.printStackTrace();
+		} finally {
+			notifyAll();
 		}
 	}
 

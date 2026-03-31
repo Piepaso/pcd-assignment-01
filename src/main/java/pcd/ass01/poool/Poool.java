@@ -9,6 +9,7 @@ import pcd.ass01.poool.controller.CmdMonitor;
 import pcd.ass01.poool.model.*;
 import pcd.ass01.poool.view.RenderMonitor;
 import pcd.ass01.poool.view.View;
+import pcd.ass01.poool.view.ViewAgent;
 import pcd.ass01.poool.view.ViewModel;
 
 public class Poool {
@@ -17,7 +18,7 @@ public class Poool {
 	public static void main(String[] argv) {
 
 		final BoardConf CONFIGURATION = new PoolConf();
-		final int THREADS = CONFIGURATION.getSmallBalls().size() > 100 ? Runtime.getRuntime().availableProcessors(): 1; // +1 view = n + 1 threads
+		final int THREADS = CONFIGURATION.getSmallBalls().size() > 100 ? Runtime.getRuntime().availableProcessors(): 1;
 
 		Board board = new Board(CONFIGURATION);
 		BallsMonitor ballsMonitor = new BallsMonitor(board, THREADS);

@@ -4,6 +4,7 @@ import pcd.ass01.poool.controller.ActiveController;
 import pcd.ass01.poool.controller.PressedCmd;
 import pcd.ass01.poool.controller.ReleasedCmd;
 import pcd.ass01.poool.model.P2d;
+import pcd.ass01.poool.model.PlayerData;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -22,6 +23,7 @@ public class ViewFrame extends JFrame {
     private final VisualiserPanel panel;
     private final ViewModel model;
 	private final RenderMonitor renderMonitor;
+	private boolean gameOverDisplayed = false;
 	private static final Map<Integer, Color> PLAYER_COLORS = Map.of(
 			0, Color.YELLOW,
 			1, Color.RED,
@@ -69,10 +71,16 @@ public class ViewFrame extends JFrame {
     }
 
 	public void render() {
-        panel.repaint();
-    }
-        
-    public class VisualiserPanel extends JPanel {
+		panel.repaint();
+
+		// Controllo se il gioco è finito e se non abbiamo ancora mostrato il popup
+		if (model.isGameOver() && !gameOverDisplayed) {
+			gameOverDisplayed = true;
+			showGameOverDialog();
+		}
+	}
+
+	public class VisualiserPanel extends JPanel {
         private final int dx;
         private final int dy;
         
@@ -123,14 +131,16 @@ public class ViewFrame extends JFrame {
 			/* Render player */
             g2.setStroke(new BasicStroke(3));
             for (var p: model.getPlayers()) {
-	            var b = p.ball();
-	            var pos = b.pos();
-	            int x0 = (int)(dx + pos.x()*dx);
-	            int y0 = (int)(dy - pos.y()*dy);
-	            int radiusX = (int)(b.radius()*dx);
-	            int radiusY = (int)(b.radius()*dy);
-	            g2.setColor(PLAYER_COLORS.getOrDefault(p.id(), Color.GRAY));
-	            g2.fillOval(x0 - radiusX,y0 - radiusY,radiusX*2,radiusY*2);
+				if (p.isAlive()) {
+					var b = p.ball();
+					var pos = b.pos();
+					int x0 = (int) (dx + pos.x() * dx);
+					int y0 = (int) (dy - pos.y() * dy);
+					int radiusX = (int) (b.radius() * dx);
+					int radiusY = (int) (b.radius() * dy);
+					g2.setColor(PLAYER_COLORS.getOrDefault(p.id(), Color.GRAY));
+					g2.fillOval(x0 - radiusX, y0 - radiusY, radiusX * 2, radiusY * 2);
+				}
 				g2.drawString("Player " + p.id() + " score: " + p.score(), 20, 120 + 20*p.id());
 			}
 
@@ -145,6 +155,26 @@ public class ViewFrame extends JFrame {
         }
         
     }
+
+	private void showGameOverDialog() {
+		SwingUtilities.invokeLater(() -> {
+			StringBuilder sb = new StringBuilder("Game Over!\n\nScore leaderboard:\n");
+			model.getPlayers().stream().filter(PlayerData::isAlive).sorted((p1, p2) -> p2.score() - p1.score())
+					.forEach(p -> sb.append("Giocatore " + p.id() + ": " + p.score() + "\n"));
+
+			Object[] options = {"Exit game"};
+			JOptionPane.showOptionDialog(this,
+					sb.toString(),
+					"Game Over",
+					JOptionPane.DEFAULT_OPTION,
+					JOptionPane.INFORMATION_MESSAGE,
+					null,
+					options,
+					options[0]);
+
+			System.exit(0);
+		});
+	}
 
 	private P2d getNormalizedPos(MouseEvent e) {
 		double normX = (e.getX() - panel.dx) / (double) panel.dx;

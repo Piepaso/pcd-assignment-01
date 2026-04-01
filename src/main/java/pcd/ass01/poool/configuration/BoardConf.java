@@ -15,4 +15,6 @@ public interface BoardConf {
 	List<Ball> getSmallBalls();
 
 	List<Hole> getHoles();
+
+	int getWinScore();
 }

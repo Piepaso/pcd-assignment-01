@@ -2,11 +2,9 @@ package pcd.ass01.poool.model;
 
 import java.util.*;
 
-public class Ball {
+import static pcd.ass01.poool.configuration.StaticConf.*;
 
-    private final static double FRICTION_FACTOR = 0.02; // 0.01 min 0.02 buono
-    private final static double RESTITUTION_FACTOR = 1.0;
-    private final static double MIN_SPEED = 0.0001;
+public class Ball {
 
     private final double radius;
     private final double mass;
@@ -23,8 +21,8 @@ public class Ball {
     private V2d posIncrease;
     private V2d velIncrease;
     private int numCollisions;
-    private final double[] impContributions;
-    
+    private final Map<Integer, Double> impContributions;
+
     public Ball(P2d pos, double radius, double mass, V2d vel, int playerId) {
        this.playerId = playerId;
        this.pos = pos;
@@ -37,7 +35,7 @@ public class Ball {
        lastCollisionPlayerId = playerId;
        numCollisions = 0;
        inHole = false;
-       impContributions = new double[10];
+       impContributions = new HashMap<>();
     }
 
     public void setBounds(Boundary bounds) {
@@ -50,7 +48,7 @@ public class Ball {
 
     public void updateState(double dt) {
         double speed = vel.abs();
-    	if (speed > MIN_SPEED) {
+    	if (speed > MIN_SPEED_NOT_ZERO) {
             double dec    = FRICTION_FACTOR * dt;
             double factor = Math.max(0, speed - dec) / speed;
             vel = vel.mul(factor);
@@ -108,7 +106,7 @@ public class Ball {
                 velIncrease = new V2d(- (imp / mass) * nx, - (imp / mass) * ny);
                 var otherPlayerId = other.lastCollisionPlayerId();
                 if (!isPlayer() && otherPlayerId >= 0) {
-                    impContributions[otherPlayerId] += imp;
+                    impContributions.merge(otherPlayerId, imp, Double::sum);
                 }
                 numCollisions++;
             }
@@ -127,13 +125,13 @@ public class Ball {
             int maxIdx = lastCollisionPlayerId;
             double max = 0;
 
-            for (int i = 0; i < impContributions.length; i++) {
-                if (impContributions[i] > max) {
-                    maxIdx = i;
-                    max = impContributions[i];
+            for (var entry : impContributions.entrySet()) {
+                if (entry.getValue() > max) {
+                    maxIdx = entry.getKey();
+                    max = entry.getValue();
                 }
-                impContributions[i] = 0;
             }
+            impContributions.clear();
             lastCollisionPlayerId = maxIdx;
         }
 
@@ -187,7 +185,7 @@ public class Ball {
     public void applyKick(Kick kick) {
         if (isPlayer()) {
             if (vel.abs() == 0)
-                vel = new V2d(kick.position(), pos).getNormalized().mul(Math.min(kick.strength(), 3.0));
+                vel = new V2d(kick.position(), pos).getNormalized().mul(Math.min(kick.strength(), MAX_KICK_STRENGTH));
         } else {
             throw new IllegalStateException("Only player ball can be kicked");
         }

@@ -8,10 +8,12 @@ public class BotAgent extends Thread {
 
 	private final CmdMonitor cmdMonitor;
 	private final long delay;
+	private final int id;
 
-	public BotAgent(CmdMonitor cmdMonitor, long delay) {
+	public BotAgent(CmdMonitor cmdMonitor, long delay, int botId) {
 		this.cmdMonitor = cmdMonitor;
 		this.delay = delay;
+		this.id = botId;
 	}
 
 	@Override
@@ -24,7 +26,7 @@ public class BotAgent extends Thread {
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-			cmdMonitor.botKick(1, new P2d(random.nextDouble(-1, 1), random.nextDouble(-1, 1)), random.nextDouble(0, 3));
+			cmdMonitor.botKick(id, new P2d(random.nextDouble(-1, 1), random.nextDouble(-1, 1)), random.nextDouble(0, 3));
 		}
 	}
 }

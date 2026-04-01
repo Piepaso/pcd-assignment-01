@@ -2,12 +2,10 @@ package pcd.ass01.poool.model;
 
 public class Player {
 
-    private final int id;
     private final Ball ball;
     private int score;
 
-    public Player(int id, Ball ball) {
-        this.id = id;
+    public Player(Ball ball) {
         this.ball = ball;
     }
 
@@ -24,7 +22,7 @@ public class Player {
     }
 
     public int id() {
-        return id;
+        return ball.getPlayerId();
     }
 
 }

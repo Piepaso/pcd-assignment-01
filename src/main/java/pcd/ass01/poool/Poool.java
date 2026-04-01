@@ -1,7 +1,7 @@
 package pcd.ass01.poool;
 
 import pcd.ass01.poool.configuration.BoardConf;
-import pcd.ass01.poool.configuration.PoolConf;
+import pcd.ass01.poool.configuration.MassiveBoardConf;
 import pcd.ass01.poool.controller.ActiveController;
 import pcd.ass01.poool.controller.BallsMonitor;
 import pcd.ass01.poool.controller.BotAgent;
@@ -17,13 +17,14 @@ public class Poool {
 	
 	public static void main(String[] argv) {
 
-		final BoardConf CONFIGURATION = new PoolConf();
+		final BoardConf CONFIGURATION = new MassiveBoardConf();
 		final int THREADS = CONFIGURATION.getSmallBalls().size() > 100 ? Runtime.getRuntime().availableProcessors(): 1;
 
 		Board board = new Board(CONFIGURATION);
 		BallsMonitor ballsMonitor = new BallsMonitor(board, THREADS);
 
-		CmdMonitor cmdMonitor = new CmdMonitor();
+		int humanPlayerId = 0;
+		CmdMonitor cmdMonitor = new CmdMonitor(humanPlayerId);
 		ActiveController controller = new ActiveController(cmdMonitor);
 
 		ViewModel viewModel = new ViewModel(ballsMonitor.getUpdatedBoardData(), board.getHoles());
@@ -32,11 +33,12 @@ public class Poool {
 
 		ViewAgent viewAgent = new ViewAgent(view, viewModel, ballsMonitor, renderMonitor);
 
-		BotAgent botAgent = new BotAgent(cmdMonitor, 1000);
-
 		board.startEngine(ballsMonitor, cmdMonitor, THREADS);
 		controller.start();
 		viewAgent.start();
-		botAgent.start();
+		for (int i = 0; i < CONFIGURATION.getPlayerBall().size() ; i++) {
+			int botPlayerId = CONFIGURATION.getPlayerBall().get(i).getPlayerId();
+			new BotAgent(cmdMonitor, 1000, botPlayerId).start();
+		}
 	}
 }

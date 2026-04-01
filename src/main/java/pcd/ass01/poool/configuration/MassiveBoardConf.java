@@ -13,7 +13,10 @@ public class MassiveBoardConf implements BoardConf {
 
 	@Override
 	public List<Ball> getPlayerBall() {
-		return Collections.singletonList(new Ball(new P2d(0, -0.75), 0.05, 20.0, new V2d(0, 0.5), 0));
+		return List.of(
+				new Ball(new P2d(-0.2, -0.75), 0.05, 20.0, new V2d(0, 0.5), 1),
+				new Ball(new P2d(0.2, -0.75), 0.05, 20.0, new V2d(0, 0.5), 2)
+		);
 	}
 
 	@Override
@@ -39,6 +42,11 @@ public class MassiveBoardConf implements BoardConf {
 				new Hole(new P2d(-0.9, 0.9), 0.1),
 				new Hole(new P2d(0.9, 0.9), 0.1)
 		);
+	}
+
+	@Override
+	public int getWinScore() {
+		return 500;
 	}
 
 	public Boundary getBoardBoundary() {

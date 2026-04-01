@@ -3,10 +3,18 @@ package pcd.ass01.poool.controller;
 import pcd.ass01.poool.model.Kick;
 import pcd.ass01.poool.model.P2d;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class CmdMonitor {
 
 	private long pressedTime = -1;
-	private final Kick[] kicks = new Kick[10];
+	private final int humanPlayerId;
+	private final Map<Integer, Kick> kicks = new HashMap<>();
+
+	public CmdMonitor(int humanPlayerId) {
+		this.humanPlayerId = humanPlayerId;
+	}
 
 	public synchronized void mousePressed(long time) {
 		this.pressedTime = time;
@@ -14,26 +22,24 @@ public class CmdMonitor {
 
 	public synchronized void mouseReleased(P2d position, long time) {
 		if (pressedTime != -1) {
-			kicks[0] = new Kick(position, pressedTime, time);
+			kicks.put(humanPlayerId, new Kick(position, pressedTime, time));
 			pressedTime = -1;
 		}
 	}
 
 	public synchronized void botKick(int playerId, P2d position, double strength) {
-		kicks[playerId] = new Kick(position, strength);
+		kicks.put(playerId, new Kick(position, strength));
 	}
 
 	public synchronized boolean isKickAvailable(int playerId) {
-		return kicks[playerId] != null;
+		return kicks.containsKey(playerId);
 	}
 
 	public synchronized Kick consumeKick(int playerId) {
-		if (kicks[playerId] != null) {
-			Kick k = kicks[playerId];
-			kicks[playerId] = null;
-			return k;
-		} else {
-			throw new IllegalStateException("Kick not available for player: " + playerId);
+		Kick kick = kicks.remove(playerId);
+		if (kick != null) {
+			return kick;
 		}
+		throw new IllegalStateException("Kick not available for player: " + playerId);
 	}
 }

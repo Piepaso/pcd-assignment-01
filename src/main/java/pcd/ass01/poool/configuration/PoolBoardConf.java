@@ -3,16 +3,16 @@ package pcd.ass01.poool.configuration;
 import pcd.ass01.poool.model.*;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
-public class PoolConf implements BoardConf {
+public class PoolBoardConf implements BoardConf {
 
 	private final static int NUM_LAYERS = 15;
 	private final static double BALL_RADIUS = 0.02;
 	private final static double BALL_MASS = 0.5;
 	private final static P2d START_VERTEX = new P2d(0, 0);
+	private static final int WIN_SCORE = 10;
 
 	private final static Boundary BOUNDARY = new Boundary(-1.0, -1.0, 1.0, 1.0);
 
@@ -44,6 +44,11 @@ public class PoolConf implements BoardConf {
 			new Hole(new P2d(-1, 1), 0.1),
 			new Hole(new P2d(1, 1), 0.1)
 		);
+	}
+
+	@Override
+	public int getWinScore() {
+		return WIN_SCORE;
 	}
 
 	private static List<P2d> generateTriangle() {

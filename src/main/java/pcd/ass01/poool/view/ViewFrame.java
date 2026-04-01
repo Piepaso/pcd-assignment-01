@@ -18,17 +18,14 @@ import java.awt.event.WindowEvent;
 import java.util.Map;
 import javax.swing.*;
 
+import static pcd.ass01.poool.configuration.StaticConf.PLAYER_COLORS;
+
 public class ViewFrame extends JFrame {
 
     private final VisualiserPanel panel;
     private final ViewModel model;
 	private final RenderMonitor renderMonitor;
 	private boolean gameOverDisplayed = false;
-	private static final Map<Integer, Color> PLAYER_COLORS = Map.of(
-			0, Color.YELLOW,
-			1, Color.RED,
-			2, Color.PINK
-			);
     
     public ViewFrame(ViewModel model, ActiveController controller, RenderMonitor renderMonitor, int w, int h){
     	this.model = model;
@@ -72,8 +69,6 @@ public class ViewFrame extends JFrame {
 
 	public void render() {
 		panel.repaint();
-
-		// Controllo se il gioco è finito e se non abbiamo ancora mostrato il popup
 		if (model.isGameOver() && !gameOverDisplayed) {
 			gameOverDisplayed = true;
 			showGameOverDialog();

@@ -1,9 +1,15 @@
 package pcd.ass01.poool.view;
 
 public class RenderMonitor {
+
+	private volatile boolean renderDone = false;
+
 	public synchronized void await() {
 		try {
-			wait();
+			while (!renderDone) {
+				wait();
+			}
+			renderDone = false;
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		} finally {
@@ -12,6 +18,7 @@ public class RenderMonitor {
 	}
 
 	public synchronized void signal() {
+		renderDone = true;
 		notifyAll();
 	}
 }

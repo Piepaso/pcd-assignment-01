@@ -3,8 +3,6 @@ package pcd.ass01.poool.controller;
 import pcd.ass01.poool.util.BoundedBuffer;
 import pcd.ass01.poool.util.BoundedBufferImpl;
 
-import static pcd.ass01.poool.configuration.StaticConf.MAX_PLAYERS_NUM;
-
 public class ActiveController extends Thread {
 
 	private BoundedBuffer<Cmd> cmdBuffer;

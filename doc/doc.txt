@@ -1,0 +1,46 @@
+
+
+Agenti:
+
+IO bound o con sleep:
+ViewAgent -> si occupa di aggiornare il view model se un nuovo stato è disponibile, e di renderizzare la view,
+             aspettando che l'Event Dispatch Thread abbia terminato il render precedente.
+BotAgent -> si occupa di decidere quando e come muovere la pallina del bot, con un certo delay nel loop.
+ActiveController -> si occupa di gestire l'input del giocatore: aspetta che gli eventi vengano salvati su un buffer dall'EDT,
+                    processandoli ordinatamente.
+
+CPU bound
+BallsAgent -> si occupano dei calcoli di fisica. Avendo usato la classe Thread, che usa quelli del sistema operativo,
+            non si è creato un agente per ogni pallina, ma si è assegnata una lista di palline a ciascuno, dividendole equamente secondo la logica:
+            endIndex_i = startIndex_(i+1) = i * size / n, dove n sono i thread fisici disponibili nel sistema.
+Questo perché gli agenti precedentemente descritti passano la maggior parte del tempo in wait, per cui non consumano CPU.
+
+
+
+Monitor:
+
+BallsMonitor ->  il monitor più complesso, regola l'accesso alle Balls:
+                contiene due barriere, una per aspettare l'update delle palline in base alle loro velocità, al fine di ottenere
+                uno stato coerente per il calcolo delle collisioni.
+                La seconda aspetta che tutti abbiano calcolato le collisioni, per poi generare una copia dello stato della board attraverso getBoardData()
+                La quale viene usata dagli altri agenti per aggiornare il view model.
+                Ogni barriera restituisce al termine le informazioni necessarie per il successivo step.
+                Infine fa in modo che se il view agent è più rapido del loop dei ballsAgent si mette in attesa per il nuovo stato, viceversa invece,
+                i ballsAgent aspettano solo di sincronizzarsi tra loro, perché l'accuratezza della simulazione fisica a istanti finiti aumenta all'aumentare della frequenza di aggiornamento
+
+CmdMonitor -> struttura dati concorrente che raccoglie l'insieme dei comandi processati da giocatori e bot servendoli, dando la possibilità ai ballsAgent di consumarli.
+
+RenderMonitor -> semplice monitor per sincronizzare il ViewAgent con l'EDT che renderizza
+
+
+
+
+
+Prestazioni:
+Misurate su cpu i5-13600kf con 6 core a 5.1 GHz con iperthreading e 14 core efficienti a 3GHz, per un totale di 20 core logici.
+Utilizzando 20 ball agent con 4500 palline l'engine compie tra 50 e 60 iterazioni al secondo.
+Mentre con uno solo non supera le 6 iterazioni al secondo, si può misurare quindi uno speedup di quasi 10, per cui una buona efficienza,
+considerando che il singolo thread usa un performance core, mentre i 20 thread usano tutti i core, e due per ogni performance core.
+
+Con 50 ball invece un singolo thread può compiere fino a 60000 fps, mentre con 20 il numero di iterazioni al secondo non supera le 8000, indipendentemente dal numero di palline, per via dell'overhead della concorrenza.
+La parità è con circa 150 palline.

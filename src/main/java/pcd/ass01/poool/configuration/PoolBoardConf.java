@@ -8,7 +8,7 @@ import java.util.Random;
 
 public class PoolBoardConf implements BoardConf {
 
-	private final static int NUM_LAYERS = 15;
+	private final static int NUM_LAYERS = 10;
 	private final static double BALL_RADIUS = 0.02;
 	private final static double BALL_MASS = 0.5;
 	private final static P2d START_VERTEX = new P2d(0, 0);

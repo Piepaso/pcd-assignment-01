@@ -21,11 +21,10 @@ public class ViewAgent extends Thread {
 
 	public void run() {
 		long previousFPSUpdate = System.currentTimeMillis();
+		BoardData boardData = ballsMonitor.getUpdatedBoardData();
 
 		while (true) {
-			BoardData boardData = ballsMonitor.getUpdatedBoardData();
 			viewModel.update(boardData);
-
 
 			if (System.currentTimeMillis() - previousFPSUpdate >= 1000) {
 				viewModel.updateEngineFPS(ballsMonitor.getFrames());
@@ -35,6 +34,7 @@ public class ViewAgent extends Thread {
 			}
 
 			view.render();
+			boardData = ballsMonitor.getUpdatedBoardData();
 			renderMonitor.await();
 
 			frameCounter++;

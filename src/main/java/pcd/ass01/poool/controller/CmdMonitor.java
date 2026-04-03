@@ -9,11 +9,11 @@ import java.util.Map;
 public class CmdMonitor {
 
 	private long pressedTime = -1;
-	private final int humanPlayerId;
+	private final int mousePlayerId;
 	private final Map<Integer, Kick> kicks = new HashMap<>();
 
 	public CmdMonitor(int humanPlayerId) {
-		this.humanPlayerId = humanPlayerId;
+		this.mousePlayerId = humanPlayerId;
 	}
 
 	public synchronized void mousePressed(long time) {
@@ -22,7 +22,7 @@ public class CmdMonitor {
 
 	public synchronized void mouseReleased(P2d position, long time) {
 		if (pressedTime != -1) {
-			kicks.put(humanPlayerId, new Kick(position, pressedTime, time));
+			kicks.put(mousePlayerId, new Kick(position, pressedTime, time));
 			pressedTime = -1;
 		}
 	}
@@ -32,7 +32,7 @@ public class CmdMonitor {
 	}
 
 	public synchronized boolean isKickAvailable(int playerId) {
-		return kicks.containsKey(playerId);
+		return playerId >= 0 && kicks.containsKey(playerId);
 	}
 
 	public synchronized Kick consumeKick(int playerId) {

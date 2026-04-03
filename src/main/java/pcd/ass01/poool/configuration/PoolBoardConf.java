@@ -8,11 +8,16 @@ import java.util.Random;
 
 public class PoolBoardConf implements BoardConf {
 
-	private final static int NUM_LAYERS = 10;
+	private final static int NUM_LAYERS = 16;
 	private final static double BALL_RADIUS = 0.02;
 	private final static double BALL_MASS = 0.5;
 	private final static P2d START_VERTEX = new P2d(0, 0);
-	private static final int WIN_SCORE = 10;
+	private static final int WIN_SCORE = 50;
+	private final BallFactory factory;
+
+	public PoolBoardConf(BallFactory ballFactory) {
+		this.factory = ballFactory;
+	}
 
 	private final static Boundary BOUNDARY = new Boundary(-1.0, -1.0, 1.0, 1.0);
 
@@ -24,15 +29,16 @@ public class PoolBoardConf implements BoardConf {
 	@Override
 	public List<Ball> getPlayerBall() {
 		return List.of(
-				new Ball(new P2d(-0.2, -0.75), 0.03, 2.0, new V2d(0, 0), 0),
-				new Ball(new P2d(0.2, -0.75), 0.03, 2.0, new V2d(0, 0), 1)
+				factory.getPlayerBall(new P2d(-0.2, -0.75), 0.03, 2.0, new V2d(0, 0), PlayerType.MOUSE),
+				factory.getPlayerBall(new P2d(0.2, -0.75), 0.03, 2.0, new V2d(0, 0), PlayerType.BOT)
+
 		);
 	}
 
 	@Override
 	public List<Ball> getSmallBalls() {
 		return generateTriangle().stream()
-			.map(p -> new Ball(p, BALL_RADIUS, BALL_MASS, new V2d(0, 0), -1))
+			.map(p -> factory.getSmallBall(p, BALL_RADIUS, BALL_MASS, new V2d(0, 0)))
 			.toList();
 	}
 

@@ -23,7 +23,7 @@ public class BallsAgent extends Thread {
 
 			for (Ball b : balls) {
 				b.updateState(dt);
-				if (b.isPlayer() && playerMonitor.isKickAvailable(b.getPlayerId())) {
+				if (playerMonitor.isKickAvailable(b.getPlayerId())) {
 					b.applyKick(playerMonitor.consumeKick(b.getPlayerId()));
 				}
 			}

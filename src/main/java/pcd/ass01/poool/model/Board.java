@@ -58,7 +58,7 @@ public class Board {
 		balls.removeIf(Ball::isInHole);
 
 		boolean gameOver = players.stream().anyMatch(p -> p.score() >= win_score) ||
-				players.stream().filter(p -> !p.ball().isInHole()).count() <= 1;
+                players.stream().allMatch(p -> p.ball().isInHole());
 
 		return new BoardData(
 			balls.stream().map(BallData::new).toList(),

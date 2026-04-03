@@ -1,8 +1,8 @@
-package pcd.ass01.poool.controller;
+package pcd.ass01.poool.model;
 
-import pcd.ass01.poool.model.BoardData;
-import pcd.ass01.poool.model.BallData;
-import pcd.ass01.poool.model.Board;
+import pcd.ass01.poool.model.board.Board;
+import pcd.ass01.poool.model.dto.BoardData;
+import pcd.ass01.poool.model.dto.BallData;
 
 import java.util.List;
 import java.util.concurrent.locks.Condition;

@@ -1,6 +1,6 @@
 package pcd.ass01.poool.controller;
 
-import pcd.ass01.poool.model.P2d;
+import pcd.ass01.poool.model.board.P2d;
 
 import java.util.Random;
 

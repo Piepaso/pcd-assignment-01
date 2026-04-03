@@ -1,9 +1,15 @@
-package pcd.ass01.poool.model;
+package pcd.ass01.poool.model.board;
 
 
 import pcd.ass01.poool.configuration.BoardConf;
-import pcd.ass01.poool.controller.BallsMonitor;
 import pcd.ass01.poool.controller.CmdMonitor;
+import pcd.ass01.poool.model.BallsAgent;
+import pcd.ass01.poool.model.BallsMonitor;
+import pcd.ass01.poool.model.Player;
+import pcd.ass01.poool.model.balls.Ball;
+import pcd.ass01.poool.model.dto.BallData;
+import pcd.ass01.poool.model.dto.BoardData;
+import pcd.ass01.poool.model.dto.PlayerData;
 
 import java.util.*;
 

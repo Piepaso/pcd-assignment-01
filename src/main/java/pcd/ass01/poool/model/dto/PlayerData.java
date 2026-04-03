@@ -1,4 +1,6 @@
-package pcd.ass01.poool.model;
+package pcd.ass01.poool.model.dto;
+
+import pcd.ass01.poool.model.Player;
 
 public record PlayerData(int id, BallData ball, int score, boolean isAlive) {
 	public PlayerData(Player player) {

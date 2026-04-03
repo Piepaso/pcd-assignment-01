@@ -1,6 +1,9 @@
 package pcd.ass01.poool.view;
 
-import pcd.ass01.poool.model.*;
+import pcd.ass01.poool.model.board.Hole;
+import pcd.ass01.poool.model.dto.BallData;
+import pcd.ass01.poool.model.dto.BoardData;
+import pcd.ass01.poool.model.dto.PlayerData;
 
 import java.util.List;
 

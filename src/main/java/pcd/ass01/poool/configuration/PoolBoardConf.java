@@ -1,6 +1,11 @@
 package pcd.ass01.poool.configuration;
 
-import pcd.ass01.poool.model.*;
+import pcd.ass01.poool.model.balls.Ball;
+import pcd.ass01.poool.model.balls.BallFactory;
+import pcd.ass01.poool.model.board.Boundary;
+import pcd.ass01.poool.model.board.Hole;
+import pcd.ass01.poool.model.board.P2d;
+import pcd.ass01.poool.model.board.V2d;
 
 import java.util.ArrayList;
 import java.util.List;

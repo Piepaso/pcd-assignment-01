@@ -1,7 +1,8 @@
 package pcd.ass01.poool.model;
 
-import pcd.ass01.poool.controller.BallsMonitor;
 import pcd.ass01.poool.controller.CmdMonitor;
+import pcd.ass01.poool.model.balls.Ball;
+import pcd.ass01.poool.model.dto.BallData;
 
 import java.util.List;
 

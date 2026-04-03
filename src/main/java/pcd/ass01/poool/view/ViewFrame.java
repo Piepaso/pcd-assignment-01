@@ -3,8 +3,8 @@ package pcd.ass01.poool.view;
 import pcd.ass01.poool.controller.ActiveController;
 import pcd.ass01.poool.controller.PressedCmd;
 import pcd.ass01.poool.controller.ReleasedCmd;
-import pcd.ass01.poool.model.P2d;
-import pcd.ass01.poool.model.PlayerData;
+import pcd.ass01.poool.model.board.P2d;
+import pcd.ass01.poool.model.dto.PlayerData;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -15,7 +15,6 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.util.Map;
 import javax.swing.*;
 
 import static pcd.ass01.poool.configuration.StaticConf.PLAYER_COLORS;

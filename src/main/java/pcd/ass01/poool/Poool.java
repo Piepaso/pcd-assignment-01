@@ -1,13 +1,13 @@
 package pcd.ass01.poool;
 
 import pcd.ass01.poool.configuration.BoardConf;
-import pcd.ass01.poool.configuration.MassiveBoardConf;
 import pcd.ass01.poool.configuration.PoolBoardConf;
 import pcd.ass01.poool.controller.ActiveController;
-import pcd.ass01.poool.controller.BallsMonitor;
+import pcd.ass01.poool.model.BallsMonitor;
 import pcd.ass01.poool.controller.BotAgent;
 import pcd.ass01.poool.controller.CmdMonitor;
-import pcd.ass01.poool.model.*;
+import pcd.ass01.poool.model.balls.BallFactory;
+import pcd.ass01.poool.model.board.Board;
 import pcd.ass01.poool.view.RenderMonitor;
 import pcd.ass01.poool.view.View;
 import pcd.ass01.poool.view.ViewAgent;

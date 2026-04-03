@@ -1,4 +1,8 @@
-package pcd.ass01.poool.model;
+package pcd.ass01.poool.model.balls;
+
+import pcd.ass01.poool.model.board.Kick;
+import pcd.ass01.poool.model.board.P2d;
+import pcd.ass01.poool.model.board.V2d;
 
 import static pcd.ass01.poool.configuration.StaticConf.MAX_KICK_STRENGTH;
 
@@ -6,7 +10,7 @@ public class PlayerBall extends AbstractBall {
 
     private final int id;
 
-    public PlayerBall(P2d pos, double radius, double mass, V2d vel, int id) {
+    protected PlayerBall(P2d pos, double radius, double mass, V2d vel, int id) {
         super(pos, radius, mass, vel);
         this.id = id;
     }

@@ -1,4 +1,4 @@
-package pcd.ass01.poool.model;
+package pcd.ass01.poool.model.board;
 
 public record Hole(P2d position, double radius) {
 

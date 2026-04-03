@@ -1,7 +1,7 @@
 package pcd.ass01.poool.view;
 
-import pcd.ass01.poool.controller.BallsMonitor;
-import pcd.ass01.poool.model.BoardData;
+import pcd.ass01.poool.model.BallsMonitor;
+import pcd.ass01.poool.model.dto.BoardData;
 
 public class ViewAgent extends Thread {
 

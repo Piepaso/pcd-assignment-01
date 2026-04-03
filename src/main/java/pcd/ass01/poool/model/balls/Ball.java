@@ -1,4 +1,7 @@
-package pcd.ass01.poool.model;
+package pcd.ass01.poool.model.balls;
+
+import pcd.ass01.poool.model.board.*;
+import pcd.ass01.poool.model.dto.BallData;
 
 import java.util.List;
 

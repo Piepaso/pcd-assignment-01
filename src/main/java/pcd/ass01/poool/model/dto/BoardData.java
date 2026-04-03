@@ -1,4 +1,4 @@
-package pcd.ass01.poool.model;
+package pcd.ass01.poool.model.dto;
 
 import java.util.List;
 

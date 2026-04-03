@@ -1,3 +1,3 @@
-package pcd.ass01.poool.model;
+package pcd.ass01.poool.model.board;
 
 public record Boundary (double x0, double y0, double x1, double y1){}

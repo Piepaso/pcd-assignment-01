@@ -1,6 +1,8 @@
-package pcd.ass01.poool.model;
+package pcd.ass01.poool.model.balls;
 
 import pcd.ass01.poool.configuration.PlayerType;
+import pcd.ass01.poool.model.board.P2d;
+import pcd.ass01.poool.model.board.V2d;
 
 import java.util.ArrayList;
 import java.util.List;

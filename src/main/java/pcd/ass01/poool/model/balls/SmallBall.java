@@ -1,4 +1,8 @@
-package pcd.ass01.poool.model;
+package pcd.ass01.poool.model.balls;
+
+import pcd.ass01.poool.model.board.Kick;
+import pcd.ass01.poool.model.board.P2d;
+import pcd.ass01.poool.model.board.V2d;
 
 import java.util.*;
 
@@ -7,7 +11,7 @@ public class SmallBall extends AbstractBall {
     private final Map<Integer, Double> impContributions;
     private int lastCollisionPlayerId;
 
-    public SmallBall(P2d pos, double radius, double mass, V2d vel) {
+    protected SmallBall(P2d pos, double radius, double mass, V2d vel) {
         super(pos, radius, mass, vel);
         impContributions = new HashMap<>();
         lastCollisionPlayerId = -1;

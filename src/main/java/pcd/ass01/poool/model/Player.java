@@ -1,5 +1,7 @@
 package pcd.ass01.poool.model;
 
+import pcd.ass01.poool.model.balls.Ball;
+
 public class Player {
 
     private final Ball ball;

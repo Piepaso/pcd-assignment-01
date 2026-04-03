@@ -1,8 +1,8 @@
 package pcd.ass01.poool.configuration;
 
-import pcd.ass01.poool.model.Ball;
-import pcd.ass01.poool.model.Boundary;
-import pcd.ass01.poool.model.Hole;
+import pcd.ass01.poool.model.balls.Ball;
+import pcd.ass01.poool.model.board.Boundary;
+import pcd.ass01.poool.model.board.Hole;
 
 import java.util.List;
 

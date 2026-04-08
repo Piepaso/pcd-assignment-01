@@ -3,6 +3,8 @@ package pcd.ass01.poool.view;
 import pcd.ass01.poool.model.BallsMonitor;
 import pcd.ass01.poool.model.dto.BoardData;
 
+import javax.swing.*;
+
 public class ViewAgent extends Thread {
 
 	private final View view;
@@ -34,6 +36,7 @@ public class ViewAgent extends Thread {
 			}
 
 			view.render();
+			SwingUtilities.invokeLater(renderMonitor::signal);
 			boardData = ballsMonitor.getUpdatedBoardData();
 			renderMonitor.await();
 

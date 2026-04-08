@@ -16,7 +16,7 @@ public class PoolBoardConf implements BoardConf {
 	private final static int NUM_LAYERS = 16;
 	private final static double BALL_RADIUS = 0.02;
 	private final static double BALL_MASS = 0.5;
-	private final static P2d START_VERTEX = new P2d(0, 0);
+	private final static P2d TRIANGLE_VERTEX = new P2d(0, 0);
 	private static final int WIN_SCORE = 50;
 	private final BallFactory factory;
 
@@ -35,7 +35,8 @@ public class PoolBoardConf implements BoardConf {
 	public List<Ball> getPlayerBall() {
 		return List.of(
 				factory.getPlayerBall(new P2d(-0.2, -0.75), 0.03, 2.0, new V2d(0, 0), PlayerType.MOUSE),
-				factory.getPlayerBall(new P2d(0.2, -0.75), 0.03, 2.0, new V2d(0, 0), PlayerType.BOT)
+				factory.getPlayerBall(new P2d(0.2, -0.75), 0.03, 2.0, new V2d(0, 0), PlayerType.BOT),
+				factory.getPlayerBall(new P2d(0.4, -0.75), 0.03, 2.0, new V2d(0, 0), PlayerType.BOT)
 
 		);
 	}
@@ -74,7 +75,7 @@ public class PoolBoardConf implements BoardConf {
 
 			for (int col = 0; col <= row; col++) {
 				double xOffset = xStartOffset + (col * centerDistance) + rand.nextDouble() * 0.004 - 0.002;
-				points.add(START_VERTEX.sum(new V2d(xOffset, yOffset)));
+				points.add(TRIANGLE_VERTEX.sum(new V2d(xOffset, yOffset)));
 			}
 		}
 

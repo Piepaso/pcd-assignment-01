@@ -11,7 +11,7 @@ public class BallFactory {
 
     private int id = 0;
     private int mouseId = 0;
-    private List<Integer> bots = new ArrayList<>();
+    private final List<Integer> bots = new ArrayList<>();
 
     public Ball getSmallBall(P2d pos, double mass, double radius, V2d vel) {
         return new SmallBall(pos, mass, radius, vel);

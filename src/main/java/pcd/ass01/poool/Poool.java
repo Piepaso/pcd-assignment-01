@@ -30,7 +30,7 @@ public class Poool {
 
 		ViewModel viewModel = new ViewModel(ballsMonitor.getUpdatedBoardData(), board.getHoles());
 		RenderMonitor renderMonitor = new RenderMonitor();
-		View view = new View(viewModel, controller, renderMonitor);
+		View view = new View(viewModel, controller);
 
 		ViewAgent viewAgent = new ViewAgent(view, viewModel, ballsMonitor, renderMonitor);
 

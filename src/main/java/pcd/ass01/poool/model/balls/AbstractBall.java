@@ -105,7 +105,9 @@ abstract public class AbstractBall implements Ball {
             if (dvn <= 0) { /* if not already separating, update velocities */
                 double imp = -(1 + RESTITUTION_FACTOR) * dvn / (1.0/mass + 1.0/other.mass());
                 velIncrease = new V2d(- (imp / mass) * nx, - (imp / mass) * ny);
-                updateImpContributions(other.lastCollisionPlayerId(), imp);
+                if (!SCORE_ONLY_DIRECT_COLLISION || other.isPlayer()) {
+                    updateImpContributions(other.lastCollisionPlayerId(), imp);
+                }
                 numCollisions++;
             }
         }

@@ -6,11 +6,7 @@ import pcd.ass01.poool.controller.ReleasedCmd;
 import pcd.ass01.poool.model.board.P2d;
 import pcd.ass01.poool.model.dto.PlayerData;
 
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
+import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.WindowAdapter;
@@ -23,12 +19,10 @@ public class ViewFrame extends JFrame {
 
     private final VisualiserPanel panel;
     private final ViewModel model;
-	private final RenderMonitor renderMonitor;
 	private boolean gameOverDisplayed = false;
     
-    public ViewFrame(ViewModel model, ActiveController controller, RenderMonitor renderMonitor, int w, int h){
+    public ViewFrame(ViewModel model, ActiveController controller, int w, int h){
     	this.model = model;
-		this.renderMonitor = renderMonitor;
 
     	setTitle("Poool");
         setSize(w,h + 25);
@@ -68,6 +62,7 @@ public class ViewFrame extends JFrame {
 
 	public void render() {
 		panel.repaint();
+		Toolkit.getDefaultToolkit().sync(); // prevent GUI freeze on Linux while moving mouse
 		if (model.isGameOver() && !gameOverDisplayed) {
 			gameOverDisplayed = true;
 			showGameOverDialog();
@@ -134,18 +129,18 @@ public class ViewFrame extends JFrame {
 					int radiusY = (int) (b.radius() * dy);
 					g2.setColor(PLAYER_COLORS.getOrDefault(p.id(), Color.GRAY));
 					g2.fillOval(x0 - radiusX, y0 - radiusY, radiusX * 2, radiusY * 2);
+				} else {
+					g2.setColor(Color.LIGHT_GRAY);
 				}
 				g2.drawString("Player " + p.id() + " score: " + p.score(), 20, 120 + 20*p.id());
 			}
 
-			g2.setColor(Color.LIGHT_GRAY);
+			g2.setColor(Color.BLACK);
 
 	        g2.setStroke(new BasicStroke(1));
 	        g2.drawString("Num small balls: " + model.getBalls().size(), 20, 60);
 	        g2.drawString("FPS engine: " + model.getEngineFPS(), 20, 80);
 	        g2.drawString("FPS view: " + model.getViewFPS(), 20, 100);
-
-	        renderMonitor.signal();
         }
         
     }

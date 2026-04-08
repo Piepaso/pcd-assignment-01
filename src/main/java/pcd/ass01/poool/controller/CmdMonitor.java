@@ -31,8 +31,12 @@ public class CmdMonitor {
 		kicks.put(playerId, new Kick(position, strength));
 	}
 
-	public synchronized boolean isKickAvailable(int playerId) {
-		return playerId >= 0 && kicks.containsKey(playerId);
+	public boolean isKickAvailable(int playerId) {
+		return playerId >= 0 && kicksContains(playerId);
+	}
+
+	private synchronized boolean kicksContains(int playerId) {
+		return kicks.containsKey(playerId);
 	}
 
 	public synchronized Kick consumeKick(int playerId) {

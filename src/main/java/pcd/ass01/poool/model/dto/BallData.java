@@ -4,8 +4,8 @@ import pcd.ass01.poool.model.board.P2d;
 import pcd.ass01.poool.model.board.V2d;
 import pcd.ass01.poool.model.balls.Ball;
 
-public record BallData(P2d pos, V2d vel, double radius, double mass, int lastCollisionPlayerId) {
+public record BallData(P2d pos, V2d vel, double radius, double mass, int lastCollisionPlayerId, boolean isPlayer) {
 	public BallData(Ball b) {
-		this(b.getPos(), b.getVel(), b.getRadius(), b.getMass(), b.getLastCollisionPlayerId());
+		this(b.getPos(), b.getVel(), b.getRadius(), b.getMass(), b.getLastCollisionPlayerId(), b.getPlayerId() >= 0);
 	}
 }

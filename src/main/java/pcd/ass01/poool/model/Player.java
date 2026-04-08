@@ -16,7 +16,10 @@ public class Player {
     }
 
     public int score() {
-        return score;
+        if (!ball.isInHole()) {
+            return score;
+        }
+        return 0;
     }
 
     public Ball ball() {

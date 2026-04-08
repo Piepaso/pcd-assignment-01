@@ -5,12 +5,18 @@ import pcd.ass01.poool.model.board.P2d;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class CmdMonitor {
 
 	private long pressedTime = -1;
 	private final int mousePlayerId;
 	private final Map<Integer, Kick> kicks = new HashMap<>();
+	private final Lock lock = new ReentrantLock();
+	private final Condition firstHumanMoveMade = lock.newCondition();
+	private volatile Boolean gameStarted = false;
 
 	public CmdMonitor(int humanPlayerId) {
 		this.mousePlayerId = humanPlayerId;
@@ -22,6 +28,7 @@ public class CmdMonitor {
 
 	public synchronized void mouseReleased(P2d position, long time) {
 		if (pressedTime != -1) {
+			signalFirstMoveDone();
 			kicks.put(mousePlayerId, new Kick(position, pressedTime, time));
 			pressedTime = -1;
 		}
@@ -45,5 +52,30 @@ public class CmdMonitor {
 			return kick;
 		}
 		throw new IllegalStateException("Kick not available for player: " + playerId);
+	}
+
+	public void waitPlayerFirstMove() {
+		lock.lock();
+		try {
+			while (!gameStarted) {
+				firstHumanMoveMade.await();
+			}
+		} catch (InterruptedException e) {
+			throw new RuntimeException(e);
+		} finally {
+			lock.unlock();
+		}
+	}
+
+	private void signalFirstMoveDone() {
+		if (!gameStarted) {
+			lock.lock();
+			try {
+				gameStarted = true;
+				firstHumanMoveMade.signalAll();
+			} finally {
+				lock.unlock();
+			}
+		}
 	}
 }

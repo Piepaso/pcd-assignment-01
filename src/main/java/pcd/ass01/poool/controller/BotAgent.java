@@ -7,26 +7,27 @@ import java.util.Random;
 public class BotAgent extends Thread {
 
 	private final CmdMonitor cmdMonitor;
-	private final long delay;
 	private final int id;
 
-	public BotAgent(CmdMonitor cmdMonitor, long delay, int botId) {
+	public BotAgent(CmdMonitor cmdMonitor, int botId) {
 		this.cmdMonitor = cmdMonitor;
-		this.delay = delay;
 		this.id = botId;
 	}
 
 	@Override
 	public void run() {
 		var random = new Random();
+		int delay = random.nextInt(500, 3000);
 
+		cmdMonitor.waitPlayerFirstMove();
 		while (true) {
+			cmdMonitor.botKick(id, new P2d(random.nextDouble(-1, 1), random.nextDouble(-1, 1)), delay/1000.0);
 			try {
 				Thread.sleep(delay);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-			cmdMonitor.botKick(id, new P2d(random.nextDouble(-1, 1), random.nextDouble(-1, 1)), random.nextDouble(0, 3));
+			delay = random.nextInt(500, 3000);
 		}
 	}
 }

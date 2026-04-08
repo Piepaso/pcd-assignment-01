@@ -28,7 +28,7 @@ public class Poool {
 		CmdMonitor cmdMonitor = new CmdMonitor(ballFactory.getMousePlayerId());
 		ActiveController controller = new ActiveController(cmdMonitor);
 
-		ViewModel viewModel = new ViewModel(ballsMonitor.getUpdatedBoardData(), board.getHoles());
+		ViewModel viewModel = new ViewModel(ballsMonitor.getUpdatedBoardData(), board.getHoles(), ballFactory.getMousePlayerId());
 		RenderMonitor renderMonitor = new RenderMonitor();
 		View view = new View(viewModel, controller);
 
@@ -37,6 +37,6 @@ public class Poool {
 		board.startEngine(ballsMonitor, cmdMonitor, THREADS);
 		controller.start();
 		viewAgent.start();
-		ballFactory.getBots().forEach(id -> new BotAgent(cmdMonitor, 1000, id).start());
+		ballFactory.getBotIds().forEach(id -> new BotAgent(cmdMonitor, id).start());
 	}
 }

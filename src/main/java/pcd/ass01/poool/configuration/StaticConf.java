@@ -9,11 +9,11 @@ public class StaticConf {
 	public final static double MIN_SPEED_NOT_ZERO = 0.0001;
 
 	public final static double MAX_KICK_STRENGTH = 3.0;
-	public final static boolean SCORE_ONLY_DIRECT_COLLISION = false;
+	public final static boolean SCORE_ONLY_DIRECT_COLLISION = true;
 
 	public final static Map<Integer, Color> PLAYER_COLORS = Map.of(
 			0, Color.YELLOW,
 			1, Color.RED,
-			2, Color.ORANGE
+			2, Color.CYAN
 	);
 }

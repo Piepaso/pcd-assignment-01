@@ -26,14 +26,9 @@ public class ActiveController extends Thread {
 	
 	public void notifyNewCmd(Cmd cmd) {
 		try {
-			log("new cmd notified: " + cmd);
 			cmdBuffer.put(cmd);
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
-	}
-	
-	private void log(String msg) {
-		System.out.println("[ " + System.currentTimeMillis() + "][ Controller ] " + msg);
 	}
 }

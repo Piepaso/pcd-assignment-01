@@ -11,7 +11,7 @@ public class BallFactory {
 
     private int id = 0;
     private int mouseId = 0;
-    private final List<Integer> bots = new ArrayList<>();
+    private final List<Integer> botIds = new ArrayList<>();
 
     public Ball getSmallBall(P2d pos, double mass, double radius, V2d vel) {
         return new SmallBall(pos, mass, radius, vel);
@@ -19,14 +19,14 @@ public class BallFactory {
 
     public Ball getPlayerBall(P2d pos, double mass, double radius, V2d vel, PlayerType type) {
         switch (type) {
-            case BOT -> bots.add(id);
+            case BOT -> botIds.add(id);
             case MOUSE -> this.mouseId = id;
         }
         return new PlayerBall(pos, mass, radius, vel, id++);
     }
 
-    public List<Integer> getBots() {
-        return List.copyOf(bots);
+    public List<Integer> getBotIds() {
+        return List.copyOf(botIds);
     }
 
     public int getMousePlayerId() {

@@ -20,7 +20,8 @@ public class ViewFrame extends JFrame {
     private final VisualiserPanel panel;
     private final ViewModel model;
 	private boolean gameOverDisplayed = false;
-    
+	private boolean showControlHints = true;
+
     public ViewFrame(ViewModel model, ActiveController controller, int w, int h){
     	this.model = model;
 
@@ -50,6 +51,9 @@ public class ViewFrame extends JFrame {
 			@Override
 			public void mouseReleased(java.awt.event.MouseEvent e) {
 				controller.notifyNewCmd(new ReleasedCmd(System.currentTimeMillis(), getNormalizedPos(e)));
+				if (showControlHints) {
+					showControlHints = false;
+				}
 			}
 
 			@Override
@@ -129,6 +133,11 @@ public class ViewFrame extends JFrame {
 					int radiusY = (int) (b.radius() * dy);
 					g2.setColor(PLAYER_COLORS.getOrDefault(p.id(), Color.GRAY));
 					g2.fillOval(x0 - radiusX, y0 - radiusY, radiusX * 2, radiusY * 2);
+					if (p.id() == model.getHumanPlayerId()) {
+						g2.setColor(Color.BLACK);
+						g2.drawString("H", x0 - 5, y0 + 4);
+						g2.setColor(PLAYER_COLORS.getOrDefault(p.id(), Color.GRAY));
+					}
 				} else {
 					g2.setColor(Color.LIGHT_GRAY);
 				}
@@ -141,8 +150,12 @@ public class ViewFrame extends JFrame {
 	        g2.drawString("Num small balls: " + model.getBalls().size(), 20, 60);
 	        g2.drawString("FPS engine: " + model.getEngineFPS(), 20, 80);
 	        g2.drawString("FPS view: " + model.getViewFPS(), 20, 100);
+
+			if (showControlHints) {
+				paintControlHints(g2);
+			}
         }
-        
+
     }
 
 	private void showGameOverDialog() {
@@ -163,6 +176,30 @@ public class ViewFrame extends JFrame {
 
 			System.exit(0);
 		});
+	}
+
+	private void paintControlHints(Graphics2D g2) {
+		int panelW = this.getWidth();
+		int panelH = this.getHeight();
+		int boxW = Math.min(760, panelW - 60);
+		int boxH = 110;
+		int boxX = (panelW - boxW) / 2;
+		int boxY = (panelH - boxH) / 2;
+
+		g2.setColor(new Color(0, 0, 0, 210));
+		g2.fillRoundRect(boxX, boxY, boxW, boxH, 16, 16);
+		g2.setColor(new Color(255, 255, 255, 220));
+		g2.drawRoundRect(boxX, boxY, boxW, boxH, 16, 16);
+
+		Font oldFont = g2.getFont();
+		g2.setColor(Color.WHITE);
+		g2.setFont(oldFont.deriveFont(Font.BOLD, 15f));
+		g2.drawString("Controls", boxX + 18, boxY + 30);
+		g2.setFont(oldFont.deriveFont(Font.PLAIN, 14f));
+		g2.drawString("Hold the mouse button to charge your shot.", boxX + 18, boxY + 58);
+		g2.drawString("On release, the player ball moves along the vector from cursor to ball center.\n" +
+				"Power depends on hold time.", boxX + 18, boxY + 82);
+		g2.setFont(oldFont);
 	}
 
 	private P2d getNormalizedPos(MouseEvent e) {

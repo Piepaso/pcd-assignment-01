@@ -9,14 +9,16 @@ import java.util.List;
 
 public class ViewModel {
 
-	private List<Hole> holes;
+	private final List<Hole> holes;
+	private final int humanPlayerId;
 	private BoardData boardData;
 
 	private int engineFPS = 0;
 	private int viewFPS = 0;
 	
-	public ViewModel(BoardData board, List<Hole> holes) {
+	public ViewModel(BoardData board, List<Hole> holes, int humanPlayerId) {
 		this.holes = holes;
+		this.humanPlayerId = humanPlayerId;
 		boardData = board;
 	}
 	
@@ -55,4 +57,9 @@ public class ViewModel {
 	public void updateViewFPS(int frameCounter) {
 		viewFPS = frameCounter;
 	}
+
+	public int getHumanPlayerId() {
+		return humanPlayerId;
+	}
+
 }

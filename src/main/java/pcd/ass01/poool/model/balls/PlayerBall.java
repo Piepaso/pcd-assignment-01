@@ -4,6 +4,7 @@ import pcd.ass01.poool.model.board.Kick;
 import pcd.ass01.poool.model.board.P2d;
 import pcd.ass01.poool.model.board.V2d;
 
+import static pcd.ass01.poool.configuration.StaticConf.KICK_ONLY_WHEN_BALL_IS_STOPPED;
 import static pcd.ass01.poool.configuration.StaticConf.MAX_KICK_STRENGTH;
 
 public class PlayerBall extends AbstractBall {
@@ -33,7 +34,7 @@ public class PlayerBall extends AbstractBall {
 
     @Override
     protected V2d getKickVector(Kick kick) {
-        if (getVel().abs() == 0)
+        if (!KICK_ONLY_WHEN_BALL_IS_STOPPED || getVel().abs() == 0)
             return new V2d(kick.position(), getPos()).getNormalized().mul(Math.min(kick.strength(), MAX_KICK_STRENGTH));
         else
             return new V2d(0, 0);

@@ -1,6 +1,8 @@
 package pcd.ass01.poool.configuration;
 
 import java.awt.*;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 
 public class StaticConf {
@@ -13,9 +15,15 @@ public class StaticConf {
 	public final static double MIN_SPEED_NOT_ZERO = 0.0001;
 	public final static double MAX_KICK_STRENGTH = 3.0;
 
-	public final static Map<Integer, Color> PLAYER_COLORS = Map.of(
-			0, Color.YELLOW,
-			1, Color.RED,
-			2, Color.CYAN
-	);
+	public final static double AGENTS_ITERATIONS = 5;
+
+	public static final Map<Integer, Color> PLAYER_COLORS;
+
+	static {
+		Map<Integer, Color> playerColors = new HashMap<Integer, Color>();
+		playerColors.put(0, Color.YELLOW);
+		playerColors.put(1, Color.RED);
+		playerColors.put(2, Color.CYAN);
+		PLAYER_COLORS = Collections.unmodifiableMap(playerColors);
+	}
 }

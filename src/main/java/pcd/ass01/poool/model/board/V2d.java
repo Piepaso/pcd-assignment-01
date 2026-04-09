@@ -1,7 +1,16 @@
 package pcd.ass01.poool.model.board;
 
+import java.util.Objects;
 
-public record V2d(double x, double y)  {
+public final class V2d {
+
+    private final double x;
+    private final double y;
+
+    public V2d(double x, double y) {
+        this.x = x;
+        this.y = y;
+    }
 
     public V2d(P2d from, P2d to){
         this(to.x() - from.x(), to.y() - from.y());
@@ -35,6 +44,29 @@ public record V2d(double x, double y)  {
     public String toString(){
         return "V2d("+x+","+y+")";
     }
-    
-    
+
+    public double x() {
+        return x;
+    }
+
+    public double y() {
+        return y;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        V2d v2d = (V2d) o;
+        return Double.compare(v2d.x, x) == 0 && Double.compare(v2d.y, y) == 0;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(x, y);
+    }
 }

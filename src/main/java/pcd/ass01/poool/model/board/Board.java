@@ -12,6 +12,7 @@ import pcd.ass01.poool.model.dto.BoardData;
 import pcd.ass01.poool.model.dto.PlayerData;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Board {
 
@@ -67,8 +68,8 @@ public class Board {
                 players.stream().allMatch(p -> p.ball().isInHole());
 
 		return new BoardData(
-			balls.stream().map(BallData::new).toList(),
-			players.stream().map(PlayerData::new).toList(),
+			balls.stream().map(BallData::new).collect(Collectors.toList()),
+			players.stream().map(PlayerData::new).collect(Collectors.toList()),
 			gameOver
 		);
 	}

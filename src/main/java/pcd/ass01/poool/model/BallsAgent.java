@@ -1,5 +1,6 @@
 package pcd.ass01.poool.model;
 
+import pcd.ass01.poool.configuration.StaticConf;
 import pcd.ass01.poool.controller.CmdMonitor;
 import pcd.ass01.poool.model.balls.Ball;
 import pcd.ass01.poool.model.dto.BallData;
@@ -18,7 +19,7 @@ public class BallsAgent extends Thread {
 	}
 
 	public void run() {
-		while (true) {
+		for (int i = 0; i < StaticConf.AGENTS_ITERATIONS; i++) {
 
 			double dt = ballsMonitor.waitForNextFrame();
 

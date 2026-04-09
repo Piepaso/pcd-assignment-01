@@ -1,5 +1,6 @@
 package pcd.ass01.poool.view;
 
+import pcd.ass01.poool.configuration.StaticConf;
 import pcd.ass01.poool.model.BallsMonitor;
 import pcd.ass01.poool.model.dto.BoardData;
 
@@ -22,16 +23,15 @@ public class ViewAgent extends Thread {
 	}
 
 	public void run() {
-		long previousFPSUpdate = System.currentTimeMillis();
+		//long previousFPSUpdate = System.currentTimeMillis();
 		BoardData boardData = ballsMonitor.getUpdatedBoardData();
 
-		while (true) {
+		for (int i = 0; i < StaticConf.AGENTS_ITERATIONS; i++)  {
 			viewModel.update(boardData);
 
-			if (System.currentTimeMillis() - previousFPSUpdate >= 1000) {
+			if (i % 3 == 0) {
 				viewModel.updateEngineFPS(ballsMonitor.getFrames());
 				viewModel.updateViewFPS(frameCounter);
-				previousFPSUpdate = System.currentTimeMillis();
 				frameCounter = 0;
 			}
 

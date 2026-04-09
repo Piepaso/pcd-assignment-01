@@ -22,7 +22,7 @@ public class SmallBall extends AbstractBall {
         int maxIdx = getVel().abs() > 0 ? lastCollisionPlayerId : -1;
         double max = 0;
 
-        for (var entry : impContributions.entrySet()) {
+        for (Map.Entry<Integer, Double> entry : impContributions.entrySet()) {
             if (entry.getValue() > max && entry.getKey() >= 0) {
                 maxIdx = entry.getKey();
                 max = entry.getValue();

@@ -20,7 +20,7 @@ public class Poool {
 
 		final BallFactory ballFactory = new BallFactory();
 		final BoardConf CONFIGURATION = new PoolBoardConf(ballFactory);
-		final int THREADS = CONFIGURATION.getSmallBalls().size() > 150 ? Runtime.getRuntime().availableProcessors(): 1;
+		final int THREADS = 2;
 
 		Board board = new Board(CONFIGURATION);
 		BallsMonitor ballsMonitor = new BallsMonitor(board, THREADS);
@@ -30,13 +30,13 @@ public class Poool {
 
 		ViewModel viewModel = new ViewModel(ballsMonitor.getUpdatedBoardData(), board.getHoles(), ballFactory.getMousePlayerId());
 		RenderMonitor renderMonitor = new RenderMonitor();
-		View view = new View(viewModel, controller);
+		//View view = new View(viewModel, controller);
 
-		ViewAgent viewAgent = new ViewAgent(view, viewModel, ballsMonitor, renderMonitor);
+		//ViewAgent viewAgent = new ViewAgent(view, viewModel, ballsMonitor, renderMonitor);
 
 		board.startEngine(ballsMonitor, cmdMonitor, THREADS);
 		controller.start();
-		viewAgent.start();
+		//viewAgent.start();
 		ballFactory.getBotIds().forEach(id -> new BotAgent(cmdMonitor, id).start());
 	}
 }

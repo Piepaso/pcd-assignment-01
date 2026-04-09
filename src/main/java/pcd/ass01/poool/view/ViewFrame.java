@@ -3,7 +3,9 @@ package pcd.ass01.poool.view;
 import pcd.ass01.poool.controller.ActiveController;
 import pcd.ass01.poool.controller.PressedCmd;
 import pcd.ass01.poool.controller.ReleasedCmd;
+import pcd.ass01.poool.model.board.Hole;
 import pcd.ass01.poool.model.board.P2d;
+import pcd.ass01.poool.model.dto.BallData;
 import pcd.ass01.poool.model.dto.PlayerData;
 
 import java.awt.*;
@@ -97,8 +99,8 @@ public class ViewFrame extends JFrame {
     		g2.drawLine(0,dy,dx*2,dy);
 
 	        g2.setColor(Color.BLACK);
-	        for (var h: model.getHoles()) {
-		        var p = h.position();
+	        for (Hole h : model.getHoles()) {
+		        P2d p = h.position();
 		        int x0 = (int)(dx + p.x()*dx);
 		        int y0 = (int)(dy - p.y()*dy);
 		        int radiusX = (int)(h.radius()*dx);
@@ -108,12 +110,12 @@ public class ViewFrame extends JFrame {
 
 			/* Render balls */
 	        int lastColor = -2;
-            for (var b: model.getBalls()) {
+			for (BallData b : model.getBalls()) {
 				if (b.lastCollisionPlayerId() != lastColor) {
 					lastColor = b.lastCollisionPlayerId();
 					g2.setColor(PLAYER_COLORS.getOrDefault(lastColor, Color.LIGHT_GRAY));
 				}
-                var p = b.pos();
+				P2d p = b.pos();
                 int x0 = (int)(dx + p.x()*dx);
                 int y0 = (int)(dy - p.y()*dy);
                 int radiusX = (int)(b.radius()*dx);
@@ -123,10 +125,10 @@ public class ViewFrame extends JFrame {
 
 			/* Render player */
             g2.setStroke(new BasicStroke(3));
-            for (var p: model.getPlayers()) {
+			for (PlayerData p : model.getPlayers()) {
 				if (p.isAlive()) {
-					var b = p.ball();
-					var pos = b.pos();
+					BallData b = p.ball();
+					P2d pos = b.pos();
 					int x0 = (int) (dx + pos.x() * dx);
 					int y0 = (int) (dy - pos.y() * dy);
 					int radiusX = (int) (b.radius() * dx);

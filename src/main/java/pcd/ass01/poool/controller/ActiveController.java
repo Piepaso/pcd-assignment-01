@@ -16,7 +16,7 @@ public class ActiveController extends Thread {
 	public void run() {
 		while (true) {
 			try {
-				var cmd = cmdBuffer.get();
+				Cmd cmd = cmdBuffer.get();
 				cmd.execute(cmdMonitor);
 			} catch (Exception ex) {
 				ex.printStackTrace();

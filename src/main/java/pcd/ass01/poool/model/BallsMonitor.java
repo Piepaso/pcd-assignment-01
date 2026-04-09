@@ -20,8 +20,8 @@ public class BallsMonitor {
 	private int threadsUpdated;
 	private int threadsFinished;
 
-	private long lastUpdateTime;
-	private double elapsed_sec;
+	//private long lastUpdateTime;
+	//private double elapsed_sec;
 	private int frameCounter;
 	private volatile BoardData boardData;
 	private volatile List<BallData> uncollisionedBallsData;
@@ -35,7 +35,7 @@ public class BallsMonitor {
 		newFrameStarted = lock.newCondition();
 		allUpdated = lock.newCondition();
 		threadsUpdated = 0;
-		lastUpdateTime = System.nanoTime();
+		//lastUpdateTime = System.nanoTime();
 		frameCounter = 0;
 		updated = false;
 	}
@@ -57,11 +57,11 @@ public class BallsMonitor {
 				updated = false;
 				frameCounter++;
 
-				elapsed_sec = (System.nanoTime() - lastUpdateTime) * 1e-9;
-				lastUpdateTime = System.nanoTime();
+				//elapsed_sec = (System.nanoTime() - lastUpdateTime) * 1e-9;
+				//lastUpdateTime = System.nanoTime();
 				newFrameStarted.signalAll();
 			}
-			return elapsed_sec;
+			return 0.1;
 		} catch (InterruptedException e) {
 			throw new RuntimeException(e);
 		} finally {

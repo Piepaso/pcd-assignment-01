@@ -3,7 +3,7 @@ package pcd.ass01.poool;
 import pcd.ass01.poool.configuration.BoardConf;
 import pcd.ass01.poool.configuration.PoolBoardConf;
 import pcd.ass01.poool.controller.ActiveController;
-import pcd.ass01.poool.model.BallsMonitor;
+import pcd.ass01.poool.model.BoardMonitor;
 import pcd.ass01.poool.controller.BotAgent;
 import pcd.ass01.poool.controller.CmdMonitor;
 import pcd.ass01.poool.model.balls.BallFactory;
@@ -23,18 +23,18 @@ public class Poool {
 		final int THREADS = CONFIGURATION.getSmallBalls().size() > 150 ? Runtime.getRuntime().availableProcessors(): 1;
 
 		Board board = new Board(CONFIGURATION);
-		BallsMonitor ballsMonitor = new BallsMonitor(board, THREADS);
+		BoardMonitor boardMonitor = new BoardMonitor(board, THREADS);
 
 		CmdMonitor cmdMonitor = new CmdMonitor(ballFactory.getMousePlayerId());
 		ActiveController controller = new ActiveController(cmdMonitor);
 
-		ViewModel viewModel = new ViewModel(ballsMonitor.getUpdatedBoardData(), board.getHoles(), ballFactory.getMousePlayerId());
+		ViewModel viewModel = new ViewModel(boardMonitor.getUpdatedBoardData(), board.getHoles(), ballFactory.getMousePlayerId());
 		RenderMonitor renderMonitor = new RenderMonitor();
 		View view = new View(viewModel, controller);
 
-		ViewAgent viewAgent = new ViewAgent(view, viewModel, ballsMonitor, renderMonitor);
+		ViewAgent viewAgent = new ViewAgent(view, viewModel, boardMonitor, renderMonitor);
 
-		board.startEngine(ballsMonitor, cmdMonitor, THREADS);
+		board.startEngine(boardMonitor, cmdMonitor, THREADS);
 		controller.start();
 		viewAgent.start();
 		ballFactory.getBotIds().forEach(id -> new BotAgent(cmdMonitor, id).start());

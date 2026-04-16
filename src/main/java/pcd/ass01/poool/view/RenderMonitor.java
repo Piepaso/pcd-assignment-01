@@ -11,8 +11,8 @@ public class RenderMonitor {
 			}
 			renderDone = false;
 		} catch (InterruptedException e) {
-			e.printStackTrace();
-		} finally {
+            throw new RuntimeException(e);
+        } finally {
 			notifyAll();
 		}
 	}

@@ -4,7 +4,7 @@ package pcd.ass01.poool.model.board;
 import pcd.ass01.poool.configuration.BoardConf;
 import pcd.ass01.poool.controller.CmdMonitor;
 import pcd.ass01.poool.model.BallsAgent;
-import pcd.ass01.poool.model.BallsMonitor;
+import pcd.ass01.poool.model.BoardMonitor;
 import pcd.ass01.poool.model.Player;
 import pcd.ass01.poool.model.balls.Ball;
 import pcd.ass01.poool.model.dto.BallData;
@@ -44,7 +44,7 @@ public class Board {
 		}
     }
 
-	public void startEngine(BallsMonitor ballsMonitor, CmdMonitor playerMonitor, int ballsThreadNum) {
+	public void startEngine(BoardMonitor ballsMonitor, CmdMonitor playerMonitor, int ballsThreadNum) {
         for (int i = 0; i < ballsThreadNum; i++) {
 			int fromIndex = i * balls.size() / ballsThreadNum;
 			int toIndex = (i + 1) * balls.size() / ballsThreadNum;
@@ -57,14 +57,14 @@ public class Board {
 		agents.forEach(Thread::start);
 	}
 
-	public BoardData getData() {
+	public BoardData getImmutableData() {
 
 		balls.stream().filter(b -> b.isInHole() && b.getLastCollisionPlayerId() >= 0)
 				.forEach(b -> playersById.get(b.getLastCollisionPlayerId()).incrementScore(1));
 		balls.removeIf(Ball::isInHole);
 
 		boolean gameOver = players.stream().anyMatch(p -> p.score() >= win_score) ||
-                players.stream().allMatch(p -> p.ball().isInHole());
+                players.stream().filter(p -> !p.ball().isInHole()).count() <= 1;
 
 		return new BoardData(
 			balls.stream().map(BallData::new).toList(),

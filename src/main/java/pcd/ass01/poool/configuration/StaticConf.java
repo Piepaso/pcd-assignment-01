@@ -5,8 +5,8 @@ import java.util.Map;
 
 public class StaticConf {
 
-	public final static boolean KICK_ONLY_WHEN_BALL_IS_STOPPED = false;
-	public final static boolean SCORE_ONLY_DIRECT_COLLISION = true;
+	public final static boolean KICK_ONLY_WHEN_BALL_IS_STOPPED = true;
+	public final static boolean SCORE_ONLY_DIRECT_COLLISION = false;
 
 	public final static double FRICTION_FACTOR = 0.02;
 	public final static double RESTITUTION_FACTOR = 1.0;

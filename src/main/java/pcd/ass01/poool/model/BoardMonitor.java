@@ -9,7 +9,7 @@ import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-public class BallsMonitor {
+public class BoardMonitor {
 
 	private final Board board;
 	private final int threadsNum;
@@ -27,7 +27,7 @@ public class BallsMonitor {
 	private volatile List<BallData> uncollisionedBallsData;
 	private volatile boolean updated;
 
-	public BallsMonitor(Board board, int threadsNum) {
+	public BoardMonitor(Board board, int threadsNum) {
 		this.threadsNum = threadsNum;
 		this.board = board;
 
@@ -53,7 +53,7 @@ public class BallsMonitor {
 				newFrameStarted.await();
 			}
 			if (last) {
-				boardData = board.getData();
+				boardData = board.getImmutableData();
 				updated = false;
 				frameCounter++;
 
@@ -82,7 +82,7 @@ public class BallsMonitor {
 				allUpdated.await();
 			}
 			if (last) {
-				uncollisionedBallsData = board.getData().balls();
+				uncollisionedBallsData = board.getImmutableData().balls();
 				allUpdated.signalAll();
 			}
 			return uncollisionedBallsData;

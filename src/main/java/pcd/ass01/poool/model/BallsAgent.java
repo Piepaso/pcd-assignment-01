@@ -8,19 +8,19 @@ import java.util.List;
 
 public class BallsAgent extends Thread {
 	private final List<Ball> balls;
-	private final BallsMonitor ballsMonitor;
+	private final BoardMonitor boardMonitor;
 	private final CmdMonitor playerMonitor;
 
-	public BallsAgent(List<Ball> balls, BallsMonitor monitor, CmdMonitor playerMonitor) {
+	public BallsAgent(List<Ball> balls, BoardMonitor monitor, CmdMonitor playerMonitor) {
 		this.balls = balls;
-		this.ballsMonitor = monitor;
+		this.boardMonitor = monitor;
 		this.playerMonitor = playerMonitor;
 	}
 
 	public void run() {
 		while (true) {
 
-			double dt = ballsMonitor.waitForNextFrame();
+			double dt = boardMonitor.waitForNextFrame();
 
 			for (Ball b : balls) {
 				b.updateState(dt);
@@ -29,7 +29,7 @@ public class BallsAgent extends Thread {
 				}
 			}
 
-			List<BallData> allBallsData = ballsMonitor.waitForUpdatedBalls();
+			List<BallData> allBallsData = boardMonitor.waitForUpdatedBalls();
 
 			for (Ball ball : balls) {
 				for (BallData other : allBallsData) {

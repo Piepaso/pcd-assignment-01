@@ -1,8 +1,6 @@
 package pcd.ass01.poool.view;
 
-import pcd.ass01.poool.controller.ActiveController;
-import pcd.ass01.poool.controller.PressedCmd;
-import pcd.ass01.poool.controller.ReleasedCmd;
+import pcd.ass01.poool.controller.*;
 import pcd.ass01.poool.model.board.P2d;
 import pcd.ass01.poool.model.dto.PlayerData;
 
@@ -22,7 +20,7 @@ public class ViewFrame extends JFrame {
 	private boolean gameOverDisplayed = false;
 	private boolean showControlHints = true;
 
-    public ViewFrame(ViewModel model, ActiveController controller, int w, int h){
+    public ViewFrame(ViewModel model, CmdController controller, int w, int h){
     	this.model = model;
 
     	setTitle("Poool");

@@ -32,7 +32,7 @@ CmdMonitor -> struttura dati concorrente che raccoglie l'insieme dei comandi pro
 
 RenderMonitor -> semplice monitor per sincronizzare il ViewAgent con l'EDT che renderizza
 
-
+BoundenBuffer
 
 
 

@@ -2,7 +2,7 @@ package pcd.ass01.poool;
 
 import pcd.ass01.poool.configuration.BoardConf;
 import pcd.ass01.poool.configuration.PoolBoardConf;
-import pcd.ass01.poool.controller.ActiveController;
+import pcd.ass01.poool.controller.ActiveCmdController;
 import pcd.ass01.poool.model.BoardMonitor;
 import pcd.ass01.poool.controller.BotAgent;
 import pcd.ass01.poool.controller.CmdMonitor;
@@ -26,7 +26,7 @@ public class Poool {
 		BoardMonitor boardMonitor = new BoardMonitor(board, THREADS);
 
 		CmdMonitor cmdMonitor = new CmdMonitor(ballFactory.getMousePlayerId());
-		ActiveController controller = new ActiveController(cmdMonitor);
+		ActiveCmdController controller = new ActiveCmdController(cmdMonitor);
 
 		ViewModel viewModel = new ViewModel(boardMonitor.getUpdatedBoardData(), board.getHoles(), ballFactory.getMousePlayerId());
 		RenderMonitor renderMonitor = new RenderMonitor();

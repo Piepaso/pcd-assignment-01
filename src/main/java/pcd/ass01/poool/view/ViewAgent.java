@@ -29,8 +29,8 @@ public class ViewAgent extends Thread {
 			viewModel.update(boardData);
 
 			if (System.currentTimeMillis() - previousFPSUpdate >= 1000) {
-				viewModel.updateEngineFPS(boardMonitor.getFrames());
-				viewModel.updateViewFPS(frameCounter);
+				viewModel.setEngineFPS(boardMonitor.getFrames());
+				viewModel.setViewFPS(frameCounter);
 				previousFPSUpdate = System.currentTimeMillis();
 				frameCounter = 0;
 			}

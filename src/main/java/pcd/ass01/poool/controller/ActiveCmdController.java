@@ -3,10 +3,10 @@ package pcd.ass01.poool.controller;
 import pcd.ass01.poool.util.BoundedBuffer;
 import pcd.ass01.poool.util.BoundedBufferImpl;
 
-public class ActiveCmdController extends Thread implements CmdController {
+public class ActiveCmdController extends Thread implements CmdController<Cmd> {
 
-	private BoundedBuffer<Cmd> cmdBuffer;
-	private CmdMonitor cmdMonitor;
+	private final BoundedBuffer<Cmd> cmdBuffer;
+	private final CmdMonitor cmdMonitor;
 	
 	public ActiveCmdController(CmdMonitor cmdMonitor) {
 		this.cmdBuffer = new BoundedBufferImpl<>(10);

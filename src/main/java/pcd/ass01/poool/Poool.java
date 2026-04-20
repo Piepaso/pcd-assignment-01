@@ -1,6 +1,7 @@
 package pcd.ass01.poool;
 
 import pcd.ass01.poool.configuration.BoardConf;
+import pcd.ass01.poool.configuration.MassiveBoardConf;
 import pcd.ass01.poool.configuration.PoolBoardConf;
 import pcd.ass01.poool.controller.ActiveCmdController;
 import pcd.ass01.poool.model.BoardMonitor;
@@ -19,7 +20,7 @@ public class Poool {
 	public static void main(String[] argv) {
 
 		final BallFactory ballFactory = new BallFactory();
-		final BoardConf CONFIGURATION = new PoolBoardConf(ballFactory);
+		final BoardConf CONFIGURATION = new MassiveBoardConf(ballFactory);
 		final int THREADS = CONFIGURATION.getSmallBalls().size() > 150 ? Runtime.getRuntime().availableProcessors(): 1;
 
 		Board board = new Board(CONFIGURATION);

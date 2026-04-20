@@ -1,6 +1,7 @@
 package pcd.ass01.pooolTaskBased;
 
 import pcd.ass01.poool.configuration.BoardConf;
+import pcd.ass01.poool.controller.CmdMonitor;
 import pcd.ass01.poool.model.BallsAgent;
 import pcd.ass01.poool.model.Player;
 import pcd.ass01.poool.model.balls.Ball;
@@ -67,8 +68,14 @@ public class Board {
         return holes;
     }
 
-    public Collection<UpdateBallsTask> getUpdateBallsTasks(double dt, Map<Integer, Kick> kicks) {
-        return balls.stream().map(b -> new UpdateBallsTask(b, dt, kicks.get(b.getPlayerId()))).toList();
+    public Collection<UpdateBallsTask> getUpdateBallsTasks(double dt, CmdMonitor cmdMonitor) {
+        return balls.stream().map(b ->
+            new UpdateBallsTask(
+                b,
+                dt,
+                cmdMonitor.isKickAvailable(b.getPlayerId()) ? cmdMonitor.consumeKick(b.getPlayerId()) : null
+            )
+        ).toList();
     }
 
     public Collection<ResolveBallsCollisionTask> getResolveCollisionsTasks() {

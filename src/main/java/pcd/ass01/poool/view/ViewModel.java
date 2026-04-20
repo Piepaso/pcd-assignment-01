@@ -50,11 +50,11 @@ public class ViewModel {
 		return viewFPS;
 	}
 
-	public void updateEngineFPS(int frameCounter) {
+	public void setEngineFPS(int frameCounter) {
 		engineFPS = frameCounter;
 	}
 
-	public void updateViewFPS(int frameCounter) {
+	public void setViewFPS(int frameCounter) {
 		viewFPS = frameCounter;
 	}
 

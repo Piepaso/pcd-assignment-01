@@ -14,13 +14,21 @@ public class MassiveBoardConf implements BoardConf {
 
 	private final static int N_ROWS = 30;
 	private final static int N_COLS = 150;
-	private final BallFactory factory = new BallFactory();
+	private final BallFactory factory;
 
-	@Override
-	public List<Ball> getPlayerBall() {
-		return List.of(
-		);
-	}
+    public MassiveBoardConf(BallFactory ballFactory) {
+        this.factory = ballFactory;
+    }
+
+    @Override
+    public List<Ball> getPlayerBall() {
+        return List.of(
+                factory.getPlayerBall(new P2d(-0.2, -0.75), 0.03, 2.0, new V2d(0, 0), PlayerType.MOUSE),
+                factory.getPlayerBall(new P2d(0.2, -0.75), 0.03, 2.0, new V2d(0, 0), PlayerType.BOT),
+                factory.getPlayerBall(new P2d(0.4, -0.75), 0.03, 2.0, new V2d(0, 0), PlayerType.BOT)
+
+        );
+    }
 
 	@Override
 	public List<Ball> getSmallBalls() {
@@ -39,13 +47,15 @@ public class MassiveBoardConf implements BoardConf {
 	}
 
 
-	@Override
-	public List<Hole> getHoles() {
-		return List.of(
-				new Hole(new P2d(-0.9, 0.9), 0.1),
-				new Hole(new P2d(0.9, 0.9), 0.1)
-		);
-	}
+    @Override
+    public List<Hole> getHoles() {
+        return List.of(
+                new Hole(new P2d(-1, -1), 0.1),
+                new Hole(new P2d(1, -1), 0.1),
+                new Hole(new P2d(-1, 1), 0.1),
+                new Hole(new P2d(1, 1), 0.1)
+        );
+    }
 
 	@Override
 	public int getWinScore() {

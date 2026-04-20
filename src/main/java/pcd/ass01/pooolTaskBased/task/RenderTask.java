@@ -2,10 +2,7 @@ package pcd.ass01.pooolTaskBased.task;
 
 import pcd.ass01.poool.view.View;
 
-import javax.swing.SwingUtilities;
-import java.lang.reflect.InvocationTargetException;
-
-public class RenderTask implements Task {
+public class RenderTask implements Task<Void> {
     private final View view;
 
     public RenderTask(View view) {
@@ -13,8 +10,8 @@ public class RenderTask implements Task {
     }
 
     @Override
-    public Void call() throws InvocationTargetException, InterruptedException {
-        SwingUtilities.invokeAndWait(view::render);
+    public Void call() {
+        view.render();
         return null;
     }
 }

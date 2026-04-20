@@ -5,7 +5,7 @@ import pcd.ass01.poool.model.dto.BallData;
 
 import java.util.List;
 
-public class ResolveBallsCollisionTask implements Task {
+public class ResolveBallsCollisionTask implements Task<Void> {
     private final Ball ball;
     private final List<BallData> snapshot;
 

@@ -6,6 +6,7 @@ import pcd.ass01.poool.controller.BotAgent;
 import pcd.ass01.poool.controller.CmdMonitor;
 import pcd.ass01.poool.model.balls.BallFactory;
 import pcd.ass01.poool.model.balls.Ball;
+import pcd.ass01.poool.model.board.Kick;
 import pcd.ass01.poool.model.dto.BallData;
 import pcd.ass01.poool.model.dto.BoardData;
 import pcd.ass01.poool.view.View;
@@ -19,6 +20,7 @@ import pcd.ass01.pooolTaskBased.task.UpdateBallsTask;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -62,21 +64,24 @@ public class Poool {
 		long lastFrame = System.nanoTime();
 		while (true) {
 			try {
+				var ballFutures = workerPool.invokeAll(board.getResolveCollisionsTasks());
+
+				renderTask.call();
+				Future<Map<Integer, Kick>> kicksFuture = workerPool.submit(executeCommandsTask);
+
+				waitFutures(ballFutures);
+				viewModel.update(board.getImmutableData());
+
+
 				long now = System.nanoTime();
 				double dt = (now - lastFrame) * 1e-9;
 				lastFrame = now;
 
-				var futures = workerPool.invokeAll(board.getUpdateBallsTasks(dt));
-				waitFutures(futures);
+				ballFutures = workerPool.invokeAll(board.getUpdateBallsTasks(dt, kicksFuture.get()));
+				waitFutures(ballFutures);
 
-				futures = workerPool.invokeAll(board.getResolveCollisionsTasks());
-				waitFutures(futures);
 
-				viewModel.update(board.getImmutableData());
 
-				renderTask.call();
-
-				executeCommandsTask.call();
 			} catch (Exception ex) {
 				ex.printStackTrace();
 				workerPool.shutdownNow();

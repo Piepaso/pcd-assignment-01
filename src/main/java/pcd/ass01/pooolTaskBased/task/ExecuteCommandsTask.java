@@ -1,8 +1,11 @@
 package pcd.ass01.pooolTaskBased.task;
 
+import pcd.ass01.poool.model.board.Kick;
 import pcd.ass01.pooolTaskBased.controller.TaskBasedController;
 
-public class ExecuteCommandsTask implements Task {
+import java.util.Map;
+
+public class ExecuteCommandsTask implements Task<Map<Integer, Kick>> {
     private final TaskBasedController controller;
 
     public ExecuteCommandsTask(TaskBasedController controller) {
@@ -10,8 +13,7 @@ public class ExecuteCommandsTask implements Task {
     }
 
     @Override
-    public Void call() {
-        controller.executePendingCommands();
+    public Map<Integer, Kick> call() {
         return null;
     }
 }

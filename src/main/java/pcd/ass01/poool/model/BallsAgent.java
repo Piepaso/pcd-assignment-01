@@ -9,12 +9,12 @@ import java.util.List;
 public class BallsAgent extends Thread {
 	private final List<Ball> balls;
 	private final BoardMonitor boardMonitor;
-	private final CmdMonitor playerMonitor;
+	private final CmdMonitor cmdMonitor;
 
-	public BallsAgent(List<Ball> balls, BoardMonitor monitor, CmdMonitor playerMonitor) {
+	public BallsAgent(List<Ball> balls, BoardMonitor monitor, CmdMonitor cmdMonitor) {
 		this.balls = balls;
 		this.boardMonitor = monitor;
-		this.playerMonitor = playerMonitor;
+		this.cmdMonitor = cmdMonitor;
 	}
 
 	public void run() {
@@ -24,8 +24,8 @@ public class BallsAgent extends Thread {
 
 			for (Ball b : balls) {
 				b.updateState(dt);
-				if (playerMonitor.isKickAvailable(b.getPlayerId())) {
-					b.applyKick(playerMonitor.consumeKick(b.getPlayerId()));
+				if (cmdMonitor.isKickAvailable(b.getPlayerId())) {
+					b.applyKick(cmdMonitor.consumeKick(b.getPlayerId()));
 				}
 			}
 

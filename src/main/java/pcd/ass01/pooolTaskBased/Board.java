@@ -6,6 +6,8 @@ import pcd.ass01.poool.model.Player;
 import pcd.ass01.poool.model.balls.Ball;
 import pcd.ass01.poool.model.board.Boundary;
 import pcd.ass01.poool.model.board.Hole;
+import pcd.ass01.poool.model.board.Kick;
+import pcd.ass01.poool.model.board.V2d;
 import pcd.ass01.poool.model.dto.BallData;
 import pcd.ass01.poool.model.dto.BoardData;
 import pcd.ass01.poool.model.dto.PlayerData;
@@ -65,8 +67,8 @@ public class Board {
         return holes;
     }
 
-    public Collection<UpdateBallsTask> getUpdateBallsTasks(double dt) {
-        return balls.stream().map(b -> new UpdateBallsTask(b, dt)).toList();
+    public Collection<UpdateBallsTask> getUpdateBallsTasks(double dt, Map<Integer, Kick> kicks) {
+        return balls.stream().map(b -> new UpdateBallsTask(b, dt, kicks.get(b.getPlayerId()))).toList();
     }
 
     public Collection<ResolveBallsCollisionTask> getResolveCollisionsTasks() {

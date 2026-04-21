@@ -22,7 +22,6 @@ public class Board {
     private final Boundary bounds;
     private final List<Ball> balls;
     private final List<Hole> holes;
-    private final List<BallsAgent> agents = new ArrayList<>();
     private final List<Player> players = new ArrayList<>();
     private final Map<Integer, Player> playersById = new HashMap<>();
     private final int win_score;

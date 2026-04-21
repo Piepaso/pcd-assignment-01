@@ -12,6 +12,7 @@ import pcd.ass01.pooolTaskBased.controller.TaskBasedController;
 import pcd.ass01.pooolTaskBased.task.ExecuteCommandsTask;
 import pcd.ass01.pooolTaskBased.task.RenderTask;
 
+import javax.swing.*;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -37,7 +38,6 @@ public class Poool {
 		ExecuteCommandsTask executeCommandsTask = new ExecuteCommandsTask(controller);
 
 		ExecutorService workerPool = Executors.newFixedThreadPool(THREADS);
-		Runtime.getRuntime().addShutdownHook(new Thread(workerPool::shutdownNow));
 
 		ballFactory.getBotIds().forEach(id -> new BotAgent(cmdMonitor, id).start());
 
@@ -52,26 +52,24 @@ public class Poool {
                 lastFrame = now;
                 frameCounter++;
                 totalTime += dt;
-
                 if (totalTime >= 1) {
                     viewModel.setEngineFPS(frameCounter);
                     frameCounter = 0;
                     totalTime = 0;
                 }
 
-                workerPool.invokeAll(board.getUpdateBallsTasks(dt, cmdMonitor)); // new tasks created
+                workerPool.invokeAll(board.getUpdateBallsTasks(dt, cmdMonitor)); // implicit barrier
 
-				workerPool.invokeAll(board.getResolveCollisionsTasks()); // new tasks created
+				workerPool.invokeAll(board.getResolveCollisionsTasks());
 
                 viewModel.update(board.getImmutableData());
 
-				renderTask.call();
+				SwingUtilities.invokeLater(renderTask::call);
 
 				workerPool.submit(executeCommandsTask); //one execution by first free worker
+
 			} catch (Exception ex) {
 				ex.printStackTrace();
-				workerPool.shutdownNow();
-				return;
 			}
 		}
 	}

@@ -20,7 +20,7 @@ public class Poool {
 	public static void main(String[] argv) {
 
 		final BallFactory ballFactory = new BallFactory();
-		final BoardConf CONFIGURATION = new MassiveBoardConf(ballFactory);
+		final BoardConf CONFIGURATION = new PoolBoardConf(ballFactory);
 		final int THREADS = CONFIGURATION.getSmallBalls().size() > 150 ? Runtime.getRuntime().availableProcessors(): 1;
 
 		Board board = new Board(CONFIGURATION);

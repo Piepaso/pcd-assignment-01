@@ -1,12 +1,23 @@
+Problema e algoritmo:
 
+Seguendo la logica proposta si osserva che per aggiornare lo stato del sistema è necessario controllare ogni coppia di pallina per verificare se è avvenuta o meno una collisione e in caso positivo aggiustare lo stato delle palline coinvolte. Questo semplice algoritmo ha un costo quadratico nel numero delle palline presenti.
+Per garantire le massime prestazioni sfruttando un hardware multicore occorre distribuire questo calcolo su tutti i thread disponibili.
+L'algoritmo proposto nello sketch1 per il calcolo sequenziale delle collisioni prevedeva che la funzione statica resolveCollisione(B1, B2) aggiornasse insieme velocità e posizione di entrambe le palline coinvolte, chiamando in un ciclo N(N-1)/2 e quindi ottimizzando sui risultati parziali.
+Per poter distribuire facilmente il calcolo tra i thread è stata modificata la funzione resolveCollision,
+includendola come metodo della classe astratta abstractBall e in modo che modifichi solamente lo stato della pallina su cui viene chiamata.
+
+
+
+Versione Monitor:
 
 Agenti:
 
 IO bound o con sleep:
 ViewAgent -> si occupa di aggiornare il view model se un nuovo stato è disponibile, e di renderizzare la view,
              aspettando che l'Event Dispatch Thread abbia terminato il render precedente.
-BotAgent -> si occupa di decidere quando e come muovere la pallina del bot, con un certo delay nel loop.
-ActiveController -> si occupa di gestire l'input del giocatore: aspetta che gli eventi vengano salvati su un buffer dall'EDT,
+
+BotAgent -> decide quando e come muovere la pallina del bot, con un certo delay nel loop.
+ActiveController -> gestisce l'input del giocatore: aspetta che gli eventi vengano salvati su un buffer dall'EDT,
                     processandoli ordinatamente.
 
 CPU bound
@@ -19,10 +30,10 @@ Questo perché gli agenti precedentemente descritti passano la maggior parte del
 
 Monitor:
 
-BallsMonitor ->  il monitor più complesso, regola l'accesso alle Balls:
+BoardMonitor ->  il monitor più complesso, regola l'accesso alle Balls:
                 contiene due barriere, una per aspettare l'update delle palline in base alle loro velocità, al fine di ottenere
                 uno stato coerente per il calcolo delle collisioni.
-                La seconda aspetta che tutti abbiano calcolato le collisioni, per poi generare una copia dello stato della board attraverso getBoardData()
+                La seconda aspetta che tutti abbiano calcolato le collisioni, per poi generare una copia immutabile dello stato della board attraverso getBoardData()
                 La quale viene usata dagli altri agenti per aggiornare il view model.
                 Ogni barriera restituisce al termine le informazioni necessarie per il successivo step.
                 Infine fa in modo che se il view agent è più rapido del loop dei ballsAgent si mette in attesa per il nuovo stato, viceversa invece,
@@ -44,3 +55,28 @@ considerando che il singolo thread usa un performance core, mentre i 20 thread u
 
 Con 50 ball invece un singolo thread può compiere fino a 60000 fps, mentre con 20 il numero di iterazioni al secondo non supera le 8000, indipendentemente dal numero di palline, per via dell'overhead della concorrenza.
 La parità è con circa 150 palline.
+
+Queste misurazioni sono in linea con la legge di Amdahl, considerando che il render grafico, parte non parallelizzabile, ha costo lineare o sublineare nel numero di palline.
+
+
+Versione Task based:
+
+è stato usato il paradigma master-worker, con un pool di threadpool di java-executors che eseguono task, coordinati dal main che svolge la funzione di master.
+
+la classe Board è stata modificata, la creazione di tread è stata sostituita con metodi per la creazione di collezioni di task, una per ogni singola Ball.
+UpdateBallTask -> chiama l'aggiornamento sulla Ball, e applica eventuali impulsi alle palline dei player
+ResolveCollisionTask -> chiama la risoluzione delle collisioni per una Ball, basandosi su uno snaphot della board
+
+I due insiemi di task vengono eseguiti in due fasi distinte, grazie alla sincronizazzione fornita dal metodo invokeAll() dell'executor,
+che blocca l'esecuzione aspettando che tutte le task siano terminate.
+
+Il controller è stato modificato: non è più un agente attivo che esegue i comandi, ma si limita a salvarli su un BoundedBuffer e espone un metodo per eseguire quello in testa.
+è stata realizzata un'implementazione del buffer con get non bloccante, così che la task termini velocemente.
+
+RenderTask -> si occupa di chiamare il render della view, viene invocata sull'edt
+ExecuteCmdTask -> chiama l'esecuzione di un comando registrato nel Controller, viene eseguita dal primo thread libero.
+
+
+Prestazioni:
+Con poche palline questa versione risente del fatto che la frequenza degli update dello stato non sono più indipendenti dalla frequenza di render, perché sono chiamati nello stesso loop nel main.
+Quando invece il numero di palline è tale che la fase di update è più pesante di quella di render, le prestazioni sono molto simili alla versione precedente, con un leggero miglioramento.

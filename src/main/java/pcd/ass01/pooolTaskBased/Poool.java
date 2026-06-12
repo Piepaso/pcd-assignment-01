@@ -1,29 +1,25 @@
 package pcd.ass01.pooolTaskBased;
 
 import pcd.ass01.poool.configuration.BoardConf;
-import pcd.ass01.poool.configuration.MassiveBoardConf;
 import pcd.ass01.poool.configuration.PoolBoardConf;
 import pcd.ass01.poool.controller.BotAgent;
 import pcd.ass01.poool.controller.CmdMonitor;
 import pcd.ass01.poool.model.balls.BallFactory;
 import pcd.ass01.poool.view.View;
 import pcd.ass01.poool.view.ViewModel;
-import pcd.ass01.pooolTaskBased.controller.TaskBasedController;
+
+import pcd.ass01.pooolTaskBased.controller.*;
 import pcd.ass01.pooolTaskBased.task.ExecuteCommandsTask;
 import pcd.ass01.pooolTaskBased.task.RenderTask;
 
-import javax.swing.*;
-import java.util.List;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 
 public class Poool {
 	public static void main(String[] argv) {
 
 		final BallFactory ballFactory = new BallFactory();
-		final BoardConf CONFIGURATION = new MassiveBoardConf(ballFactory);
+		final BoardConf CONFIGURATION = new PoolBoardConf(ballFactory);
 		final int THREADS = CONFIGURATION.getSmallBalls().size() > 150 ? Runtime.getRuntime().availableProcessors(): 1;
 
 		Board board = new Board(CONFIGURATION);
@@ -34,7 +30,7 @@ public class Poool {
 		ViewModel viewModel = new ViewModel(board.getImmutableData(), board.getHoles(), ballFactory.getMousePlayerId());
 		View view = new View(viewModel, controller);
 
-		RenderTask renderTask = new RenderTask(view);
+		RenderTask renderTask = new RenderTask(view, new RenderSemaphore());
 		ExecuteCommandsTask executeCommandsTask = new ExecuteCommandsTask(controller);
 
 		ExecutorService workerPool = Executors.newFixedThreadPool(THREADS);
@@ -64,9 +60,9 @@ public class Poool {
 
                 viewModel.update(board.getImmutableData());
 
-				SwingUtilities.invokeLater(renderTask::call);
+				workerPool.submit(renderTask);      // one execution by first free worker
 
-				workerPool.submit(executeCommandsTask); //one execution by first free worker
+				workerPool.submit(executeCommandsTask);
 
 			} catch (Exception ex) {
 				ex.printStackTrace();

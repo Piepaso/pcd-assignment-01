@@ -2,18 +2,15 @@ package pcd.ass01.pooolTaskBased;
 
 import pcd.ass01.poool.configuration.BoardConf;
 import pcd.ass01.poool.controller.CmdMonitor;
-import pcd.ass01.poool.model.BallsAgent;
 import pcd.ass01.poool.model.Player;
 import pcd.ass01.poool.model.balls.Ball;
 import pcd.ass01.poool.model.board.Boundary;
 import pcd.ass01.poool.model.board.Hole;
-import pcd.ass01.poool.model.board.Kick;
-import pcd.ass01.poool.model.board.V2d;
 import pcd.ass01.poool.model.dto.BallData;
 import pcd.ass01.poool.model.dto.BoardData;
 import pcd.ass01.poool.model.dto.PlayerData;
-import pcd.ass01.pooolTaskBased.task.ResolveBallsCollisionTask;
-import pcd.ass01.pooolTaskBased.task.UpdateBallsTask;
+import pcd.ass01.pooolTaskBased.task.ResolveCollisionTask;
+import pcd.ass01.pooolTaskBased.task.UpdateBallTask;
 
 import java.util.*;
 
@@ -67,9 +64,9 @@ public class Board {
         return holes;
     }
 
-    public Collection<UpdateBallsTask> getUpdateBallsTasks(double dt, CmdMonitor cmdMonitor) {
+    public Collection<UpdateBallTask> getUpdateBallsTasks(double dt, CmdMonitor cmdMonitor) {
         return balls.stream().map(b ->
-            new UpdateBallsTask(
+            new UpdateBallTask(
                 b,
                 dt,
                 cmdMonitor.isKickAvailable(b.getPlayerId()) ? cmdMonitor.consumeKick(b.getPlayerId()) : null
@@ -77,9 +74,9 @@ public class Board {
         ).toList();
     }
 
-    public Collection<ResolveBallsCollisionTask> getResolveCollisionsTasks() {
+    public Collection<ResolveCollisionTask> getResolveCollisionsTasks() {
         var snapshot = getImmutableData().balls();
-        return balls.stream().map(b -> new ResolveBallsCollisionTask(b, snapshot)).toList();
+        return balls.stream().map(b -> new ResolveCollisionTask(b, snapshot)).toList();
     }
 }
 

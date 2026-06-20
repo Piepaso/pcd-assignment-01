@@ -1,7 +1,6 @@
 package pcd.ass01.pooolTaskBased;
 
 import pcd.ass01.poool.configuration.BoardConf;
-import pcd.ass01.poool.configuration.MassiveBoardConf;
 import pcd.ass01.poool.configuration.PoolBoardConf;
 import pcd.ass01.poool.controller.BotAgent;
 import pcd.ass01.poool.controller.CmdMonitor;
@@ -31,7 +30,7 @@ public class Poool {
 		ViewModel viewModel = new ViewModel(board.getImmutableData(), board.getHoles(), ballFactory.getMousePlayerId());
 		View view = new View(viewModel, controller);
 
-		RenderTask renderTask = new RenderTask(view, new RenderSemaphore());
+		RenderTask renderTask = new RenderTask(view, new RenderMonitor());
 		ExecuteCommandsTask executeCommandsTask = new ExecuteCommandsTask(controller);
 
 		ExecutorService workerPool = Executors.newFixedThreadPool(THREADS);

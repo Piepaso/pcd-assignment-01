@@ -1,6 +1,6 @@
 package pcd.ass01.pooolTaskBased.controller;
 
-public class RenderSemaphore {
+public class RenderMonitor {
 
 	private volatile int renderDone = 0;
 

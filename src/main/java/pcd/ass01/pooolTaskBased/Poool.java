@@ -1,6 +1,7 @@
 package pcd.ass01.pooolTaskBased;
 
 import pcd.ass01.poool.configuration.BoardConf;
+import pcd.ass01.poool.configuration.MassiveBoardConf;
 import pcd.ass01.poool.configuration.PoolBoardConf;
 import pcd.ass01.poool.controller.BotAgent;
 import pcd.ass01.poool.controller.CmdMonitor;
